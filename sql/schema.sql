@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS crops (
     crop_id INT PRIMARY KEY AUTO_INCREMENT,
     crop_name VARCHAR(100) NOT NULL,
     category ENUM('grain', 'vegetable', 'fruit', 'pulse', 'oilseed', 'spice') NOT NULL,
-    unit VARCHAR(20) DEFAULT 'quintal',
+    unit VARCHAR(20) DEFAULT 'kg',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -143,21 +143,21 @@ INSERT INTO markets (market_name, region_id, location, market_type) VALUES
 
 -- Insert Crops (Bangladesh Major Crops)
 INSERT INTO crops (crop_name, category, unit) VALUES
-('Rice (Aman)', 'grain', 'maund'),
-('Rice (Boro)', 'grain', 'maund'),
-('Rice (Aus)', 'grain', 'maund'),
-('Wheat', 'grain', 'maund'),
-('Potato', 'vegetable', 'maund'),
-('Onion', 'vegetable', 'maund'),
-('Tomato', 'vegetable', 'maund'),
-('Jute', 'oilseed', 'maund'),
-('Mustard', 'oilseed', 'maund'),
-('Lentil (Masur)', 'pulse', 'maund'),
-('Chickpea (Chola)', 'pulse', 'maund'),
-('Sugarcane', 'grain', 'maund'),
-('Brinjal (Begun)', 'vegetable', 'maund'),
-('Chili (Morich)', 'spice', 'maund'),
-('Garlic (Rosun)', 'spice', 'maund');
+('Rice (Aman)', 'grain', 'kg'),
+('Rice (Boro)', 'grain', 'kg'),
+('Rice (Aus)', 'grain', 'kg'),
+('Wheat', 'grain', 'kg'),
+('Potato', 'vegetable', 'kg'),
+('Onion', 'vegetable', 'kg'),
+('Tomato', 'vegetable', 'kg'),
+('Jute', 'oilseed', 'kg'),
+('Mustard', 'oilseed', 'kg'),
+('Lentil (Masur)', 'pulse', 'kg'),
+('Chickpea (Chola)', 'pulse', 'kg'),
+('Sugarcane', 'grain', 'kg'),
+('Brinjal (Begun)', 'vegetable', 'kg'),
+('Chili (Morich)', 'spice', 'kg'),
+('Garlic (Rosun)', 'spice', 'kg');
 
 -- Insert Farmers (Bangladeshi Names)
 INSERT INTO farmers (farmer_name, region_id, contact_number, farm_size_acres) VALUES
@@ -183,7 +183,7 @@ INSERT INTO farmers (farmer_name, region_id, contact_number, farm_size_acres) VA
 ('Enamul Haque', 7, '01912345697', 8.5);
 
 -- Insert Current Market Prices (with some anomalies for testing)
--- Prices in Bangladeshi Taka (BDT) per maund
+-- Prices in Bangladeshi Taka (BDT) per kg
 INSERT INTO market_prices (crop_id, market_id, current_price, min_price, max_price, price_date) VALUES
 -- Rice (Aman) prices (normal avg ~2200 BDT, anomaly in market 3)
 (1, 1, 2150, 2100, 2200, '2026-01-10'),

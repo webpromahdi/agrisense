@@ -1,12 +1,18 @@
 <?php
 /**
- * AgriSense - Feature A3: Historical Price Trend Analysis
+ * AgriSense - Feature: Inter-Market Price Gap Analysis
  * 
- * Shows month-wise price trends for a selected crop using historical data.
- * Uses GROUP BY month and AVG() for aggregation.
+ * Compare prices of the same crop across different markets
+ * to identify significant price differences (arbitrage opportunities).
+ * 
+ * Uses Self-JOIN on market_prices table.
  */
 
+require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../db/connection.php';
+
+// Require authentication
+AuthController::requireAuth();
 
 $results = [];
 $error = null;
@@ -23,27 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
         (isset($_GET['crop_id']) ? (int) $_GET['crop_id'] : null);
 
     if ($selectedCrop) {
-        // SQL Query: Historical Price Trend Analysis
-        // Uses DATE_FORMAT for month grouping and AVG for price aggregation
+        // SQL Query: Inter-Market Price Gap Analysis
+        // Self-JOIN to compare same crop across all market pairs
         $sql = "
             SELECT 
-                DATE_FORMAT(ph.record_date, '%Y-%m') AS month_key,
-                DATE_FORMAT(ph.record_date, '%M %Y') AS month_name,
-                ROUND(AVG(ph.price), 2) AS avg_price,
-                SUM(ph.quantity_sold) AS total_quantity,
-                MIN(ph.price) AS min_price,
-                MAX(ph.price) AS max_price,
-                COUNT(*) AS record_count
+                c.crop_name,
+                ma.market_name AS market_a_name,
+                mp_a.current_price AS market_a_price,
+                mb.market_name AS market_b_name,
+                mp_b.current_price AS market_b_price,
+                ABS(mp_a.current_price - mp_b.current_price) AS price_gap,
+                ROUND(
+                    (ABS(mp_a.current_price - mp_b.current_price) / 
+                     LEAST(mp_a.current_price, mp_b.current_price)) * 100,
+                    2
+                ) AS gap_percentage,
+                CASE 
+                    WHEN mp_a.current_price > mp_b.current_price THEN 'Market A Higher'
+                    WHEN mp_a.current_price < mp_b.current_price THEN 'Market B Higher'
+                    ELSE 'Equal'
+                END AS price_comparison
             FROM 
-                price_history ph
-                JOIN crops c ON ph.crop_id = c.crop_id
+                market_prices mp_a
+                JOIN market_prices mp_b 
+                    ON mp_a.crop_id = mp_b.crop_id 
+                    AND mp_a.market_id < mp_b.market_id
+                JOIN crops c ON mp_a.crop_id = c.crop_id
+                JOIN markets ma ON mp_a.market_id = ma.market_id
+                JOIN markets mb ON mp_b.market_id = mb.market_id
             WHERE 
-                ph.crop_id = :crop_id
-            GROUP BY 
-                DATE_FORMAT(ph.record_date, '%Y-%m'),
-                DATE_FORMAT(ph.record_date, '%M %Y')
+                mp_a.crop_id = :crop_id
             ORDER BY 
-                DATE_FORMAT(ph.record_date, '%Y-%m') ASC
+                ABS(mp_a.current_price - mp_b.current_price) DESC
         ";
 
         $pdo = getConnection();
@@ -76,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historical Price Trend - AgriSense</title>
+    <title>Inter-Market Price Gap Analysis - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
@@ -95,16 +112,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
     <main class="max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">📈 Historical Price Trend Analysis</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">🔄 Inter-Market Price Gap Analysis</h1>
             <p class="text-gray-600">
-                Analyze month-wise price trends for crops using historical data.
-                Understand seasonal patterns and price fluctuations over time.
+                Select a crop to compare its prices across all markets and identify
+                significant price gaps for arbitrage opportunities.
             </p>
         </div>
 
         <!-- Crop Selection Form -->
         <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Select Crop for Analysis</h2>
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Select Crop to Analyze</h2>
             <form method="POST" class="flex flex-wrap items-end gap-4">
                 <div class="flex-1 min-w-[250px]">
                     <label for="crop_id" class="block text-sm font-medium text-gray-700 mb-2">
@@ -115,14 +132,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                         <option value="">-- Select a Crop --</option>
                         <?php foreach ($crops as $crop): ?>
                             <option value="<?= $crop['crop_id'] ?>" <?= $selectedCrop == $crop['crop_id'] ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($crop['crop_name']) ?> (<?= ucfirst($crop['category']) ?>)
+                                <?= htmlspecialchars($crop['crop_name']) ?> (
+                                <?= ucfirst($crop['category']) ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <button type="submit"
                     class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
-                    📊 Analyze Trends
+                    📊 Analyze Price Gaps
                 </button>
             </form>
         </div>
@@ -131,7 +149,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
         <?php if ($error): ?>
             <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
                 <p class="font-bold">Error</p>
-                <p><?= htmlspecialchars($error) ?></p>
+                <p>
+                    <?= htmlspecialchars($error) ?>
+                </p>
             </div>
         <?php endif; ?>
 
@@ -140,41 +160,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
 
             <!-- Summary Cards -->
             <?php
-            $prices = array_column($results, 'avg_price');
-            $quantities = array_column($results, 'total_quantity');
-            $overallAvg = count($prices) > 0 ? array_sum($prices) / count($prices) : 0;
-            $totalQty = array_sum($quantities);
-            $priceChange = count($prices) >= 2 ? $prices[count($prices) - 1] - $prices[0] : 0;
-            $priceChangePercent = count($prices) >= 2 && $prices[0] > 0 ? ($priceChange / $prices[0]) * 100 : 0;
+            $gaps = array_column($results, 'price_gap');
+            $percentages = array_column($results, 'gap_percentage');
+            $avgGap = count($gaps) > 0 ? array_sum($gaps) / count($gaps) : 0;
+            $maxGap = count($gaps) > 0 ? max($gaps) : 0;
+            $avgPercentage = count($percentages) > 0 ? array_sum($percentages) / count($percentages) : 0;
+            $significantGaps = count(array_filter($percentages, fn($p) => $p > 10));
             ?>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="bg-white rounded-lg shadow-md p-4 text-center">
                     <p class="text-sm text-gray-500">Crop Analyzed</p>
-                    <p class="text-xl font-bold text-green-700"><?= htmlspecialchars($cropName) ?></p>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Average Price</p>
-                    <p class="text-xl font-bold text-gray-800">৳<?= number_format($overallAvg, 2) ?></p>
-                </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Price Change</p>
-                    <p class="text-xl font-bold <?= $priceChange >= 0 ? 'text-green-600' : 'text-red-600' ?>">
-                        <?= $priceChange >= 0 ? '↑' : '↓' ?>     <?= abs(number_format($priceChangePercent, 1)) ?>%
+                    <p class="text-xl font-bold text-green-700">
+                        <?= htmlspecialchars($cropName) ?>
                     </p>
                 </div>
                 <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Total Quantity Sold</p>
-                    <p class="text-xl font-bold text-gray-800"><?= number_format($totalQty) ?> kg</p>
+                    <p class="text-sm text-gray-500">Average Price Gap</p>
+                    <p class="text-xl font-bold text-gray-800">৳
+                        <?= number_format($avgGap, 2) ?>
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center">
+                    <p class="text-sm text-gray-500">Maximum Gap</p>
+                    <p class="text-xl font-bold text-red-600">৳
+                        <?= number_format($maxGap, 2) ?>
+                    </p>
+                </div>
+                <div class="bg-white rounded-lg shadow-md p-4 text-center">
+                    <p class="text-sm text-gray-500">Significant Gaps (&gt;10%)</p>
+                    <p class="text-xl font-bold text-orange-600">
+                        <?= $significantGaps ?>
+                    </p>
                 </div>
             </div>
 
-            <!-- Price Trend Table -->
+            <!-- Price Gap Table -->
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="px-6 py-4 bg-gray-50 border-b">
                     <h2 class="text-xl font-semibold text-gray-700">
-                        📅 Monthly Price Trends for <?= htmlspecialchars($cropName) ?>
+                        📈 Price Gaps for
+                        <?= htmlspecialchars($cropName) ?>
                         <span class="text-sm font-normal text-gray-500">
-                            (<?= count($results) ?> months)
+                            (
+                            <?= count($results) ?> market pairs)
                         </span>
                     </h2>
                 </div>
@@ -184,114 +212,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                             <tr>
                                 <th
                                     class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Month
+                                    Crop Name
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Market A
                                 </th>
                                 <th
                                     class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Avg Price (৳)
+                                    Market A Price (৳)
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    Market B
                                 </th>
                                 <th
                                     class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Min Price (৳)
+                                    Market B Price (৳)
                                 </th>
                                 <th
                                     class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Max Price (৳)
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Quantity Sold
+                                    Price Gap (৳)
                                 </th>
                                 <th
                                     class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Trend
+                                    Gap %
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <?php
-                            $prevPrice = null;
-                            foreach ($results as $index => $row):
-                                $currentPrice = $row['avg_price'];
-                                $trend = $prevPrice === null ? 'neutral' :
-                                    ($currentPrice > $prevPrice ? 'up' :
-                                        ($currentPrice < $prevPrice ? 'down' : 'neutral'));
-                                ?>
+                            <?php foreach ($results as $row): ?>
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="font-medium text-gray-900">
-                                            <?= htmlspecialchars($row['month_name']) ?>
+                                            <?= htmlspecialchars($row['crop_name']) ?>
                                         </span>
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">
+                                        <?= htmlspecialchars($row['market_a_name']) ?>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-right font-mono <?= $row['price_comparison'] === 'Market A Higher' ? 'text-red-600 font-semibold' : 'text-gray-700' ?>">
+                                        ৳
+                                        <?= number_format($row['market_a_price'], 2) ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-700">
+                                        <?= htmlspecialchars($row['market_b_name']) ?>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-right font-mono <?= $row['price_comparison'] === 'Market B Higher' ? 'text-red-600 font-semibold' : 'text-gray-700' ?>">
+                                        ৳
+                                        <?= number_format($row['market_b_price'], 2) ?>
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-900 font-semibold">
-                                        ৳<?= number_format($row['avg_price'], 2) ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-blue-600">
-                                        ৳<?= number_format($row['min_price'], 2) ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-red-600">
-                                        ৳<?= number_format($row['max_price'], 2) ?>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-gray-700">
-                                        <?= number_format($row['total_quantity']) ?> kg
+                                        ৳
+                                        <?= number_format($row['price_gap'], 2) ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <?php if ($trend === 'up'): ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-green-700 bg-green-100">
-                                                ↑ Up
-                                            </span>
-                                        <?php elseif ($trend === 'down'): ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-red-700 bg-red-100">
-                                                ↓ Down
-                                            </span>
-                                        <?php else: ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-gray-700 bg-gray-100">
-                                                — Start
-                                            </span>
-                                        <?php endif; ?>
+                                        <?php
+                                        $gap = $row['gap_percentage'];
+                                        $badgeClass = $gap > 20 ? 'bg-red-100 text-red-800' :
+                                            ($gap > 10 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800');
+                                        ?>
+                                        <span
+                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium <?= $badgeClass ?>">
+                                            <?= $gap ?>%
+                                        </span>
                                     </td>
                                 </tr>
-                                <?php
-                                $prevPrice = $currentPrice;
-                            endforeach;
-                            ?>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
-                </div>
-
-                <!-- Visual Trend Bar -->
-                <div class="px-6 py-4 bg-gray-50 border-t">
-                    <h3 class="text-sm font-semibold text-gray-600 mb-3">Price Trend Visualization</h3>
-                    <div class="flex items-end gap-1 h-24">
-                        <?php
-                        $maxPrice = max($prices);
-                        foreach ($results as $index => $row):
-                            $height = $maxPrice > 0 ? ($row['avg_price'] / $maxPrice) * 100 : 0;
-                            ?>
-                            <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-green-500 rounded-t transition-all hover:bg-green-600"
-                                    style="height: <?= $height ?>%"
-                                    title="<?= $row['month_name'] ?>: ৳<?= number_format($row['avg_price'], 2) ?>"></div>
-                                <span class="text-xs text-gray-500 mt-1 transform -rotate-45 origin-left">
-                                    <?= substr($row['month_key'], 5) ?>
-                                </span>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
                 </div>
             </div>
         <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error): ?>
             <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-                <p class="font-bold">⚠️ No Historical Data Found</p>
-                <p>No price history records found for the selected crop.</p>
+                <p class="font-bold">⚠️ No Price Data Found</p>
+                <p>No market price records found for the selected crop across multiple markets.</p>
             </div>
         <?php else: ?>
             <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded">
                 <p class="font-bold">ℹ️ Getting Started</p>
-                <p>Select a crop from the dropdown to view its historical price trends.</p>
+                <p>Select a crop from the dropdown to compare its prices across all markets.</p>
             </div>
         <?php endif; ?>
-
 
         <!-- Back Navigation -->
         <div class="mt-6">

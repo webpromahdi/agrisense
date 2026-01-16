@@ -2,7 +2,7 @@
 -- AgriSense - Category A: Market Intelligence SQL Queries
 -- All analytical queries demonstrating SQL as intelligence engine
 -- For Bangladesh Agricultural Markets
--- Prices in Bangladeshi Taka (BDT), Quantities in Maund
+-- Prices in Bangladeshi Taka (BDT), Quantities in kg
 -- ============================================================
 
 -- ============================================================
@@ -159,7 +159,7 @@ SELECT
     m.market_name AS 'Market Name',
     r.region_name AS 'Region',
     c.crop_name AS 'Crop',
-    SUM(ms.quantity) AS 'Total Supply (Quintals)',
+    SUM(ms.quantity) AS 'Total Supply (kg)',
     COUNT(DISTINCT ms.farmer_id) AS 'Number of Farmers',
     ROUND(
         SUM(ms.quantity) / COUNT(DISTINCT ms.farmer_id), 
@@ -207,7 +207,7 @@ SELECT
     region_revenue.state AS 'State',
     region_revenue.crop_name AS 'Top Crop',
     region_revenue.total_revenue AS 'Total Revenue (₹)',
-    region_revenue.total_quantity AS 'Quantity Sold (Quintals)'
+    region_revenue.total_quantity AS 'Quantity Sold (kg)'
 FROM (
     -- Subquery: Calculate revenue for each crop in each region
     SELECT 
