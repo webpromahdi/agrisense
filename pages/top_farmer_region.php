@@ -88,13 +88,16 @@ if ($pdo) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-green-700 text-white shadow-lg">
+    <nav class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="../index.php" class="text-2xl font-bold">🌾 AgriSense</a>
-                <span class="text-green-200">Top Farmers by Region</span>
+                <a href="../index.php" class="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+                    <span class="text-2xl">🌾</span>
+                    <span class="text-xl font-bold">AgriSense</span>
+                </a>
+                <span class="text-green-100 text-sm font-medium">Top Farmers by Region</span>
             </div>
         </div>
     </nav>
@@ -102,9 +105,12 @@ if ($pdo) {
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">👨‍🌾 Top Performing Farmer by Region</h1>
-            <p class="text-gray-600">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-100">
+            <div class="flex items-center space-x-3 mb-3">
+                <span class="text-3xl">👨‍🌾</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Top Performing Farmer by Region</h1>
+            </div>
+            <p class="text-slate-600 leading-relaxed">
                 Identifies the farmer who has generated the highest total revenue in each region based on market supply
                 transactions.
             </p>
@@ -112,11 +118,9 @@ if ($pdo) {
 
         <!-- Error Display -->
         <?php if ($error): ?>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+            <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 mb-6 rounded-lg">
                 <p class="font-bold">Error</p>
-                <p>
-                    <?= htmlspecialchars($error) ?>
-                </p>
+                <p><?= htmlspecialchars($error) ?></p>
             </div>
         <?php endif; ?>
 
@@ -130,132 +134,121 @@ if ($pdo) {
             $regionCount = count($results);
             $topFarmer = $results[0] ?? null;
             ?>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-green-500">
-                    <p class="text-sm text-gray-500">Regions Covered</p>
-                    <p class="text-3xl font-bold text-green-700">
-                        <?= $regionCount ?>
-                    </p>
-                    <p class="text-xs text-gray-400">with farmer data</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-emerald-500">
+                    <p class="text-sm text-slate-500 font-medium">Regions Covered</p>
+                    <p class="text-3xl font-bold text-emerald-600"><?= $regionCount ?></p>
+                    <p class="text-xs text-slate-400">with farmer data</p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-blue-500">
-                    <p class="text-sm text-gray-500">Total Revenue</p>
-                    <p class="text-2xl font-bold text-blue-700">৳
-                        <?= number_format($totalRevenue) ?>
-                    </p>
-                    <p class="text-xs text-gray-400">by top farmers</p>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-sky-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Revenue</p>
+                    <p class="text-2xl font-bold text-sky-600">৳<?= number_format($totalRevenue) ?></p>
+                    <p class="text-xs text-slate-400">by top farmers</p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-yellow-500">
-                    <p class="text-sm text-gray-500">Total Quantity</p>
-                    <p class="text-2xl font-bold text-yellow-700">
-                        <?= number_format($totalQuantity) ?>
-                    </p>
-                    <p class="text-xs text-gray-400">kg supplied</p>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-amber-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Quantity</p>
+                    <p class="text-2xl font-bold text-amber-600"><?= number_format($totalQuantity) ?></p>
+                    <p class="text-xs text-slate-400">kg supplied</p>
                 </div>
                 <?php if ($topFarmer): ?>
-                    <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-purple-500">
-                        <p class="text-sm text-gray-500">Highest Earner</p>
-                        <p class="text-xl font-bold text-purple-700">
-                            <?= htmlspecialchars($topFarmer['farmer_name']) ?>
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <?= htmlspecialchars($topFarmer['region_name']) ?>
-                        </p>
+                    <div
+                        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-violet-500">
+                        <p class="text-sm text-slate-500 font-medium">Highest Earner</p>
+                        <p class="text-xl font-bold text-violet-600"><?= htmlspecialchars($topFarmer['farmer_name']) ?></p>
+                        <p class="text-sm text-slate-500"><?= htmlspecialchars($topFarmer['region_name']) ?></p>
                     </div>
                 <?php endif; ?>
             </div>
 
             <!-- Results Table -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 bg-gray-50 border-b">
-                    <h2 class="text-xl font-semibold text-gray-700">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-700">
                         🏆 Top Farmers by Region
                     </h2>
-                    <p class="text-sm text-gray-500 mt-1">
+                    <p class="text-sm text-slate-500 mt-1">
                         Each region shows the farmer with the highest total revenue from market supplies
                     </p>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-100">
+                        <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Rank
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Region
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     State
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Top Farmer
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Total Revenue
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Quantity
                                 </th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
                                     Supplies
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="divide-y divide-slate-100">
                             <?php foreach ($results as $index => $row): ?>
                                 <?php
                                 $rank = $index + 1;
                                 $bgColor = '';
                                 if ($rank == 1)
-                                    $bgColor = 'bg-yellow-50';
+                                    $bgColor = 'bg-amber-50';
                                 elseif ($rank == 2)
-                                    $bgColor = 'bg-gray-50';
+                                    $bgColor = 'bg-slate-50';
                                 elseif ($rank == 3)
                                     $bgColor = 'bg-orange-50';
                                 ?>
-                                <tr class="<?= $bgColor ?> hover:bg-gray-50">
+                                <tr class="<?= $bgColor ?> hover:bg-slate-50 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <?php if ($rank <= 3): ?>
                                             <span class="text-2xl">
                                                 <?= $rank == 1 ? '🥇' : ($rank == 2 ? '🥈' : '🥉') ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="text-lg font-medium text-gray-600">
-                                                <?= $rank ?>
-                                            </span>
+                                            <span class="text-lg font-medium text-slate-500"><?= $rank ?></span>
                                         <?php endif; ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="font-medium text-gray-900">
-                                            <?= htmlspecialchars($row['region_name']) ?>
-                                        </span>
+                                        <span
+                                            class="font-medium text-slate-900"><?= htmlspecialchars($row['region_name']) ?></span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-slate-600">
                                         <?= htmlspecialchars($row['state']) ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800">
-                                            👨‍🌾
-                                            <?= htmlspecialchars($row['farmer_name']) ?>
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-50 text-sky-700">
+                                            👨‍🌾 <?= htmlspecialchars($row['farmer_name']) ?>
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono font-bold text-green-700">
-                                        ৳
-                                        <?= number_format($row['total_revenue']) ?>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono font-bold text-emerald-600">
+                                        ৳<?= number_format($row['total_revenue']) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-700">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
                                         <?= number_format($row['total_quantity']) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-700">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
                                         <?= number_format($row['supply_count']) ?>
                                     </td>
                                 </tr>
@@ -266,14 +259,15 @@ if ($pdo) {
             </div>
 
             <!-- Back Link -->
-            <div class="mt-6 text-center">
-                <a href="../index.php" class="text-green-600 hover:text-green-800 font-medium">
-                    ← Back to Dashboard
+            <div class="mt-8">
+                <a href="../index.php"
+                    class="inline-flex items-center text-slate-600 hover:text-green-600 transition-colors duration-200">
+                    <span class="mr-2">←</span> Back to Dashboard
                 </a>
             </div>
 
         <?php else: ?>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+            <div class="bg-amber-50 border-l-4 border-amber-400 text-amber-700 p-4 rounded-lg">
                 <p class="font-bold">⚠️ No Data Found</p>
                 <p>No market supply records found for farmer revenue analysis. Please ensure:</p>
                 <ul class="list-disc list-inside mt-2 ml-4">

@@ -53,6 +53,7 @@ CREATE TABLE IF NOT EXISTS farmers (
     farmer_name VARCHAR(150) NOT NULL,
     region_id INT NOT NULL,
     contact_number VARCHAR(15),
+    farmer_code VARCHAR(6) NOT NULL UNIQUE,
     farm_size_acres DECIMAL(10,2),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (region_id) REFERENCES regions(region_id)
@@ -110,6 +111,18 @@ CREATE TABLE IF NOT EXISTS market_supply (
 );
 
 -- ============================================================
+-- TABLE: users
+-- Stores user authentication and profile data
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================
 -- SAMPLE DATA INSERTION (BANGLADESH)
 -- ============================================================
 
@@ -160,27 +173,27 @@ INSERT INTO crops (crop_name, category, unit) VALUES
 ('Garlic (Rosun)', 'spice', 'kg');
 
 -- Insert Farmers (Bangladeshi Names)
-INSERT INTO farmers (farmer_name, region_id, contact_number, farm_size_acres) VALUES
-('Abdul Karim', 1, '01712345678', 4.5),
-('Mohammad Rahim', 1, '01712345679', 3.0),
-('Fazlur Rahman', 2, '01812345680', 5.0),
-('Jamal Uddin', 2, '01812345681', 6.5),
-('Kamal Hossain', 3, '01912345682', 4.0),
-('Rafiqul Islam', 3, '01912345683', 3.5),
-('Shahidul Alam', 4, '01612345684', 7.0),
-('Nurul Haque', 5, '01512345685', 2.5),
-('Aminul Haque', 6, '01312345686', 5.5),
-('Mizanur Rahman', 7, '01412345687', 8.0),
-('Habibur Rahman', 8, '01712345688', 3.0),
-('Shafiqul Islam', 9, '01812345689', 6.0),
-('Mostafa Kamal', 10, '01912345690', 4.5),
-('Ataur Rahman', 1, '01612345691', 7.5),
-('Nazrul Islam', 2, '01512345692', 2.0),
-('Sohel Rana', 3, '01312345693', 5.5),
-('Alamgir Hossain', 4, '01412345694', 3.5),
-('Babul Mia', 5, '01712345695', 4.0),
-('Delwar Hossain', 6, '01812345696', 6.5),
-('Enamul Haque', 7, '01912345697', 8.5);
+INSERT INTO farmers (farmer_name, region_id, contact_number, farmer_code, farm_size_acres) VALUES
+('Abdul Karim', 1, '01712345678', '100001', 4.5),
+('Mohammad Rahim', 1, '01712345679', '100002', 3.0),
+('Fazlur Rahman', 2, '01812345680', '100003', 5.0),
+('Jamal Uddin', 2, '01812345681', '100004', 6.5),
+('Kamal Hossain', 3, '01912345682', '100005', 4.0),
+('Rafiqul Islam', 3, '01912345683', '100006', 3.5),
+('Shahidul Alam', 4, '01612345684', '100007', 7.0),
+('Nurul Haque', 5, '01512345685', '100008', 2.5),
+('Aminul Haque', 6, '01312345686', '100009', 5.5),
+('Mizanur Rahman', 7, '01412345687', '100010', 8.0),
+('Habibur Rahman', 8, '01712345688', '100011', 3.0),
+('Shafiqul Islam', 9, '01812345689', '100012', 6.0),
+('Mostafa Kamal', 10, '01912345690', '100013', 4.5),
+('Ataur Rahman', 1, '01612345691', '100014', 7.5),
+('Nazrul Islam', 2, '01512345692', '100015', 2.0),
+('Sohel Rana', 3, '01312345693', '100016', 5.5),
+('Alamgir Hossain', 4, '01412345694', '100017', 3.5),
+('Babul Mia', 5, '01712345695', '100018', 4.0),
+('Delwar Hossain', 6, '01812345696', '100019', 6.5),
+('Enamul Haque', 7, '01912345697', '100020', 8.5);
 
 -- Insert Current Market Prices (with some anomalies for testing)
 -- Prices in Bangladeshi Taka (BDT) per kg

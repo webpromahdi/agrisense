@@ -66,11 +66,11 @@ if ($pdo) {
             ORDER BY 
                 region_revenue.total_revenue DESC
         ";
-        
+
         $stmt = $pdo->prepare($sql);
         $stmt->execute();
         $results = $stmt->fetchAll();
-        
+
     } catch (PDOException $e) {
         $error = "Query Error: " . $e->getMessage();
     }
@@ -80,24 +80,41 @@ if ($pdo) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Most Profitable Crop by Region - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .medal-1 { color: #FFD700; } /* Gold */
-        .medal-2 { color: #C0C0C0; } /* Silver */
-        .medal-3 { color: #CD7F32; } /* Bronze */
+        .medal-1 {
+            color: #FFD700;
+        }
+
+        /* Gold */
+        .medal-2 {
+            color: #C0C0C0;
+        }
+
+        /* Silver */
+        .medal-3 {
+            color: #CD7F32;
+        }
+
+        /* Bronze */
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+
+<body class="bg-slate-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-green-700 text-white shadow-lg">
+    <nav class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="../index.php" class="text-2xl font-bold">🌾 AgriSense</a>
-                <span class="text-green-200">Top Crops by Region</span>
+                <a href="../index.php" class="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+                    <span class="text-2xl">🌾</span>
+                    <span class="text-xl font-bold">AgriSense</span>
+                </a>
+                <span class="text-green-100 text-sm font-medium">Top Crops by Region</span>
             </div>
         </div>
     </nav>
@@ -105,156 +122,180 @@ if ($pdo) {
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">🏆 Top Performing Crop by Region</h1>
-            <p class="text-gray-600">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-100">
+            <div class="flex items-center space-x-3 mb-3">
+                <span class="text-3xl">🏆</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Top Performing Crop by Region</h1>
+            </div>
+            <p class="text-slate-600 leading-relaxed">
                 Automatically shows the most profitable crop in each region based on total revenue.
             </p>
         </div>
 
         <!-- Error Display -->
         <?php if ($error): ?>
-        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
-            <p class="font-bold">Error</p>
-            <p><?= htmlspecialchars($error) ?></p>
-        </div>
+            <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 mb-6 rounded-lg">
+                <p class="font-bold">Error</p>
+                <p><?= htmlspecialchars($error) ?></p>
+            </div>
         <?php endif; ?>
 
         <!-- Results -->
         <?php if (!empty($results)): ?>
-        
-        <!-- Summary Cards -->
-        <?php
-        $totalRevenue = array_sum(array_column($results, 'total_revenue'));
-        $totalQuantity = array_sum(array_column($results, 'total_quantity'));
-        $regionCount = count($results);
-        $topRegion = $results[0] ?? null;
-        ?>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-green-500">
-                <p class="text-sm text-gray-500">Total Regions</p>
-                <p class="text-3xl font-bold text-green-700"><?= $regionCount ?></p>
-                <p class="text-xs text-gray-400">with crop data</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-blue-500">
-                <p class="text-sm text-gray-500">Total Revenue</p>
-                <p class="text-2xl font-bold text-blue-700">৳<?= number_format($totalRevenue) ?></p>
-                <p class="text-xs text-gray-400">from top crops</p>
-            </div>
-            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-yellow-500">
-                <p class="text-sm text-gray-500">Total Quantity</p>
-                <p class="text-2xl font-bold text-yellow-700"><?= number_format($totalQuantity) ?></p>
-                <p class="text-xs text-gray-400">units traded</p>
-            </div>
-            <?php if ($topRegion): ?>
-            <div class="bg-white rounded-lg shadow-md p-4 text-center border-l-4 border-purple-500">
-                <p class="text-sm text-gray-500">Top Region</p>
-                <p class="text-xl font-bold text-purple-700"><?= htmlspecialchars($topRegion['region_name']) ?></p>
-                <p class="text-sm text-gray-600"><?= htmlspecialchars($topRegion['crop_name']) ?></p>
-            </div>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Results Table -->
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-            <div class="px-6 py-4 bg-gray-50 border-b">
-                <h2 class="text-xl font-semibold text-gray-700">
-                    🥇 Most Profitable Crops by Region
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">
-                    Showing the highest revenue-generating crop in each region
-                </p>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full">
-                    <thead class="bg-gray-100">
-                        <tr>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Rank
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Region
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                State
-                            </th>
-                            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Top Crop
-                            </th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Total Revenue
-                            </th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Quantity
-                            </th>
-                            <th class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                Avg Price
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        <?php foreach ($results as $index => $row): ?>
-                        <?php
-                        $rank = $index + 1;
-                        $bgColor = '';
-                        if ($rank == 1) $bgColor = 'bg-yellow-50';
-                        elseif ($rank == 2) $bgColor = 'bg-gray-50';
-                        elseif ($rank == 3) $bgColor = 'bg-orange-50';
-                        ?>
-                        <tr class="<?= $bgColor ?> hover:bg-gray-50">
-                            <td class="px-6 py-4 whitespace-nowrap text-center">
-                                <?php if ($rank <= 3): ?>
-                                    <span class="text-2xl medal-<?= $rank ?>">
-                                        <?= $rank == 1 ? '🥇' : ($rank == 2 ? '🥈' : '🥉') ?>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="text-lg font-medium text-gray-600"><?= $rank ?></span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="font-medium text-gray-900">
-                                    <?= htmlspecialchars($row['region_name']) ?>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-gray-600">
-                                <?= htmlspecialchars($row['state']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    🌾 <?= htmlspecialchars($row['crop_name']) ?>
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right font-mono font-bold text-green-700">
-                                ৳<?= number_format($row['total_revenue']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-700">
-                                <?= number_format($row['total_quantity']) ?>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-700">
-                                ৳<?= number_format($row['avg_price'], 2) ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                   
-                </table>
-            </div>
-        </div>
 
-        
-        
+            <!-- Summary Cards -->
+            <?php
+            $totalRevenue = array_sum(array_column($results, 'total_revenue'));
+            $totalQuantity = array_sum(array_column($results, 'total_quantity'));
+            $regionCount = count($results);
+            $topRegion = $results[0] ?? null;
+            ?>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-emerald-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Regions</p>
+                    <p class="text-3xl font-bold text-emerald-600"><?= $regionCount ?></p>
+                    <p class="text-xs text-slate-400">with crop data</p>
+                </div>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-sky-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Revenue</p>
+                    <p class="text-2xl font-bold text-sky-600">৳<?= number_format($totalRevenue) ?></p>
+                    <p class="text-xs text-slate-400">from top crops</p>
+                </div>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-amber-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Quantity</p>
+                    <p class="text-2xl font-bold text-amber-600"><?= number_format($totalQuantity) ?></p>
+                    <p class="text-xs text-slate-400">units traded</p>
+                </div>
+                <?php if ($topRegion): ?>
+                    <div
+                        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-violet-500">
+                        <p class="text-sm text-slate-500 font-medium">Top Region</p>
+                        <p class="text-xl font-bold text-violet-600"><?= htmlspecialchars($topRegion['region_name']) ?></p>
+                        <p class="text-sm text-slate-500"><?= htmlspecialchars($topRegion['crop_name']) ?></p>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <!-- Results Table -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-700">
+                        🥇 Most Profitable Crops by Region
+                    </h2>
+                    <p class="text-sm text-slate-500 mt-1">
+                        Showing the highest revenue-generating crop in each region
+                    </p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-slate-50 border-b border-slate-200">
+                            <tr>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Rank
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Region
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    State
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Top Crop
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Total Revenue
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Quantity
+                                </th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Avg Price
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <?php foreach ($results as $index => $row): ?>
+                                <?php
+                                $rank = $index + 1;
+                                $bgColor = '';
+                                if ($rank == 1)
+                                    $bgColor = 'bg-amber-50';
+                                elseif ($rank == 2)
+                                    $bgColor = 'bg-slate-50';
+                                elseif ($rank == 3)
+                                    $bgColor = 'bg-orange-50';
+                                ?>
+                                <tr class="<?= $bgColor ?> hover:bg-slate-50 transition-colors duration-150">
+                                    <td class="px-6 py-4 whitespace-nowrap text-center">
+                                        <?php if ($rank <= 3): ?>
+                                            <span class="text-2xl medal-<?= $rank ?>">
+                                                <?= $rank == 1 ? '🥇' : ($rank == 2 ? '🥈' : '🥉') ?>
+                                            </span>
+                                        <?php else: ?>
+                                            <span class="text-lg font-medium text-slate-500"><?= $rank ?></span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="font-medium text-slate-900">
+                                            <?= htmlspecialchars($row['region_name']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-slate-600">
+                                        <?= htmlspecialchars($row['state']) ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-emerald-50 text-emerald-700">
+                                            🌾 <?= htmlspecialchars($row['crop_name']) ?>
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono font-bold text-emerald-600">
+                                        ৳<?= number_format($row['total_revenue']) ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
+                                        <?= number_format($row['total_quantity']) ?>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
+                                        ৳<?= number_format($row['avg_price'], 2) ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Back Link -->
+            <div class="mt-8">
+                <a href="../index.php"
+                    class="inline-flex items-center text-slate-600 hover:text-green-600 transition-colors duration-200">
+                    <span class="mr-2">←</span> Back to Dashboard
+                </a>
+            </div>
+
         <?php else: ?>
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
-            <p class="font-bold">⚠️ No Data Found</p>
-            <p>No market supply records found for revenue analysis. Please ensure:</p>
-            <ul class="list-disc list-inside mt-2 ml-4">
-                <li>Market supply data exists in the database</li>
-                <li>Regions and crops are properly linked</li>
-                <li>Price and quantity data is available</li>
-            </ul>
-        </div>
+            <div class="bg-amber-50 border-l-4 border-amber-400 text-amber-700 p-4 rounded-lg">
+                <p class="font-bold">⚠️ No Data Found</p>
+                <p>No market supply records found for revenue analysis. Please ensure:</p>
+                <ul class="list-disc list-inside mt-2 ml-4">
+                    <li>Market supply data exists in the database</li>
+                    <li>Regions and crops are properly linked</li>
+                    <li>Price and quantity data is available</li>
+                </ul>
+            </div>
         <?php endif; ?>
 
-   
+    </main>
 </body>
+
 </html>

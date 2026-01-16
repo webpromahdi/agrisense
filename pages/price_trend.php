@@ -80,13 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-green-700 text-white shadow-lg">
+    <nav class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
         <div class="max-w-7xl mx-auto px-4 py-4">
             <div class="flex justify-between items-center">
-                <a href="../index.php" class="text-2xl font-bold">🌾 AgriSense</a>
-                <span class="text-green-200">Market Intelligence System</span>
+                <a href="../index.php" class="flex items-center space-x-2 hover:opacity-90 transition-opacity">
+                    <span class="text-2xl">🌾</span>
+                    <span class="text-xl font-bold">AgriSense</span>
+                </a>
+                <span class="text-green-100 text-sm font-medium">Market Intelligence System</span>
             </div>
         </div>
     </nav>
@@ -94,24 +97,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 py-8">
         <!-- Page Header -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">📈 Historical Price Trend Analysis</h1>
-            <p class="text-gray-600">
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-100">
+            <div class="flex items-center space-x-3 mb-3">
+                <span class="text-3xl">📈</span>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Historical Price Trend Analysis</h1>
+            </div>
+            <p class="text-slate-600 leading-relaxed">
                 Analyze month-wise price trends for crops using historical data.
                 Understand seasonal patterns and price fluctuations over time.
             </p>
         </div>
 
         <!-- Crop Selection Form -->
-        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-            <h2 class="text-xl font-semibold text-gray-700 mb-4">Select Crop for Analysis</h2>
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-100">
+            <h2 class="text-lg font-semibold text-slate-700 mb-4">Select Crop for Analysis</h2>
             <form method="POST" class="flex flex-wrap items-end gap-4">
                 <div class="flex-1 min-w-[250px]">
-                    <label for="crop_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="crop_id" class="block text-sm font-medium text-slate-700 mb-2">
                         Crop
                     </label>
                     <select id="crop_id" name="crop_id" required
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                        class="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 bg-slate-50 focus:bg-white">
                         <option value="">-- Select a Crop --</option>
                         <?php foreach ($crops as $crop): ?>
                             <option value="<?= $crop['crop_id'] ?>" <?= $selectedCrop == $crop['crop_id'] ? 'selected' : '' ?>>
@@ -121,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                     </select>
                 </div>
                 <button type="submit"
-                    class="px-6 py-2 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+                    class="px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-sm hover:shadow">
                     📊 Analyze Trends
                 </button>
             </form>
@@ -129,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
 
         <!-- Error Display -->
         <?php if ($error): ?>
-            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded">
+            <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 mb-6 rounded-lg">
                 <p class="font-bold">Error</p>
                 <p><?= htmlspecialchars($error) ?></p>
             </div>
@@ -147,68 +153,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
             $priceChange = count($prices) >= 2 ? $prices[count($prices) - 1] - $prices[0] : 0;
             $priceChangePercent = count($prices) >= 2 && $prices[0] > 0 ? ($priceChange / $prices[0]) * 100 : 0;
             ?>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Crop Analyzed</p>
-                    <p class="text-xl font-bold text-green-700"><?= htmlspecialchars($cropName) ?></p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-emerald-500">
+                    <p class="text-sm text-slate-500 font-medium">Crop Analyzed</p>
+                    <p class="text-xl font-bold text-emerald-600"><?= htmlspecialchars($cropName) ?></p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Average Price</p>
-                    <p class="text-xl font-bold text-gray-800">৳<?= number_format($overallAvg, 2) ?></p>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-slate-400">
+                    <p class="text-sm text-slate-500 font-medium">Average Price</p>
+                    <p class="text-xl font-bold text-slate-700">৳<?= number_format($overallAvg, 2) ?></p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Price Change</p>
-                    <p class="text-xl font-bold <?= $priceChange >= 0 ? 'text-green-600' : 'text-red-600' ?>">
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-<?= $priceChange >= 0 ? 'emerald' : 'rose' ?>-400">
+                    <p class="text-sm text-slate-500 font-medium">Price Change</p>
+                    <p class="text-xl font-bold <?= $priceChange >= 0 ? 'text-emerald-600' : 'text-rose-500' ?>">
                         <?= $priceChange >= 0 ? '↑' : '↓' ?>     <?= abs(number_format($priceChangePercent, 1)) ?>%
                     </p>
                 </div>
-                <div class="bg-white rounded-lg shadow-md p-4 text-center">
-                    <p class="text-sm text-gray-500">Total Quantity Sold</p>
-                    <p class="text-xl font-bold text-gray-800"><?= number_format($totalQty) ?> kg</p>
+                <div
+                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-amber-500">
+                    <p class="text-sm text-slate-500 font-medium">Total Quantity Sold</p>
+                    <p class="text-xl font-bold text-amber-600"><?= number_format($totalQty) ?> kg</p>
                 </div>
             </div>
 
             <!-- Price Trend Table -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="px-6 py-4 bg-gray-50 border-b">
-                    <h2 class="text-xl font-semibold text-gray-700">
+            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100">
+                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
+                    <h2 class="text-lg font-semibold text-slate-700">
                         📅 Monthly Price Trends for <?= htmlspecialchars($cropName) ?>
-                        <span class="text-sm font-normal text-gray-500">
-                            (<?= count($results) ?> months)
-                        </span>
+                        <span class="text-sm font-normal text-slate-500">(<?= count($results) ?> months)</span>
                     </h2>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full">
-                        <thead class="bg-gray-100">
+                        <thead class="bg-slate-50 border-b border-slate-200">
                             <tr>
                                 <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Month
-                                </th>
+                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Month</th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Avg Price (৳)
-                                </th>
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Avg Price (৳)</th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Min Price (৳)
-                                </th>
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Min Price (৳)</th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Max Price (৳)
-                                </th>
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Max Price (৳)</th>
                                 <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Quantity Sold
-                                </th>
+                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Quantity Sold</th>
                                 <th
-                                    class="px-6 py-3 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                    Trend
-                                </th>
+                                    class="px-6 py-3 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">
+                                    Trend</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
+                        <tbody class="divide-y divide-slate-100">
                             <?php
                             $prevPrice = null;
                             foreach ($results as $index => $row):
@@ -217,37 +219,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                                     ($currentPrice > $prevPrice ? 'up' :
                                         ($currentPrice < $prevPrice ? 'down' : 'neutral'));
                                 ?>
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-slate-50 transition-colors duration-150">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="font-medium text-gray-900">
-                                            <?= htmlspecialchars($row['month_name']) ?>
-                                        </span>
+                                        <span
+                                            class="font-medium text-slate-900"><?= htmlspecialchars($row['month_name']) ?></span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-gray-900 font-semibold">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-900 font-semibold">
                                         ৳<?= number_format($row['avg_price'], 2) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-blue-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-sky-600">
                                         ৳<?= number_format($row['min_price'], 2) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-red-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-rose-500">
                                         ৳<?= number_format($row['max_price'], 2) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-gray-700">
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-slate-600">
                                         <?= number_format($row['total_quantity']) ?> kg
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <?php if ($trend === 'up'): ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-green-700 bg-green-100">
-                                                ↑ Up
-                                            </span>
+                                            <span
+                                                class="inline-flex items-center px-2 py-1 rounded text-emerald-700 bg-emerald-50">↑
+                                                Up</span>
                                         <?php elseif ($trend === 'down'): ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-red-700 bg-red-100">
-                                                ↓ Down
-                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded text-rose-700 bg-rose-50">↓
+                                                Down</span>
                                         <?php else: ?>
-                                            <span class="inline-flex items-center px-2 py-1 rounded text-gray-700 bg-gray-100">
-                                                — Start
-                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded text-slate-600 bg-slate-100">—
+                                                Start</span>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -260,8 +259,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                 </div>
 
                 <!-- Visual Trend Bar -->
-                <div class="px-6 py-4 bg-gray-50 border-t">
-                    <h3 class="text-sm font-semibold text-gray-600 mb-3">Price Trend Visualization</h3>
+                <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
+                    <h3 class="text-sm font-semibold text-slate-600 mb-3">Price Trend Visualization</h3>
                     <div class="flex items-end gap-1 h-24">
                         <?php
                         $maxPrice = max($prices);
@@ -269,10 +268,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                             $height = $maxPrice > 0 ? ($row['avg_price'] / $maxPrice) * 100 : 0;
                             ?>
                             <div class="flex-1 flex flex-col items-center">
-                                <div class="w-full bg-green-500 rounded-t transition-all hover:bg-green-600"
+                                <div class="w-full bg-teal-500 rounded-t transition-all hover:bg-teal-600"
                                     style="height: <?= $height ?>%"
                                     title="<?= $row['month_name'] ?>: ৳<?= number_format($row['avg_price'], 2) ?>"></div>
-                                <span class="text-xs text-gray-500 mt-1 transform -rotate-45 origin-left">
+                                <span class="text-xs text-slate-500 mt-1 transform -rotate-45 origin-left">
                                     <?= substr($row['month_key'], 5) ?>
                                 </span>
                             </div>
@@ -281,12 +280,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
                 </div>
             </div>
         <?php elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !$error): ?>
-            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+            <div class="bg-amber-50 border-l-4 border-amber-400 text-amber-700 p-4 rounded-lg">
                 <p class="font-bold">⚠️ No Historical Data Found</p>
                 <p>No price history records found for the selected crop.</p>
             </div>
         <?php else: ?>
-            <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded">
+            <div class="bg-sky-50 border-l-4 border-sky-400 text-sky-700 p-4 rounded-lg">
                 <p class="font-bold">ℹ️ Getting Started</p>
                 <p>Select a crop from the dropdown to view its historical price trends.</p>
             </div>
@@ -294,9 +293,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['crop_id'])) {
 
 
         <!-- Back Navigation -->
-        <div class="mt-6">
-            <a href="../index.php" class="inline-flex items-center text-green-600 hover:text-green-800">
-                ← Back to Dashboard
+        <div class="mt-8">
+            <a href="../index.php"
+                class="inline-flex items-center text-slate-600 hover:text-green-600 transition-colors duration-200">
+                <span class="mr-2">←</span> Back to Dashboard
             </a>
         </div>
     </main>
