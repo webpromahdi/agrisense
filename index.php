@@ -120,135 +120,167 @@ if ($pdo) {
             </div>
         <?php endif; ?>
 
-        <!-- Category A: Market Intelligence Features -->
+        <!-- Main Dashboard Grid: Features + Farmer Portal Sidebar -->
         <section class="mb-12">
+            <!-- Section Header -->
             <div class="flex items-start mb-8">
                 <div class="w-1 h-12 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full mr-4"></div>
                 <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800">Market Intelligence Features</h2>
-                    <p class="text-slate-500 mt-1">Data-driven insights from agricultural markets</p>
+                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800">Market Intelligence & Farmer Access</h2>
+                    <p class="text-slate-500 mt-1">Data-driven insights and secure farmer data management</p>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 3-Column Grid Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-                <!-- Feature A1: Price Anomaly Detection -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-rose-400 to-rose-500 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">📊</span>
+                <!-- Columns 1 & 2: Market Intelligence Feature Cards -->
+                <div class="lg:col-span-2">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                        <!-- Feature A1: Price Anomaly Detection -->
+                        <div
+                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
+                            <div class="bg-gradient-to-r from-rose-400 to-rose-500 text-white px-6 py-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-3xl">📊</span>
+                                </div>
+                                <h3 class="text-xl font-bold mt-2">Price Anomaly Detection</h3>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
+                                    Detect crops whose prices deviate more than ±20% from average prices across all
+                                    markets.
+                                </p>
+                                <a href="pages/price_anomaly.php"
+                                    class="block w-full text-center px-4 py-2.5 bg-rose-400 hover:bg-rose-500 text-white rounded-lg font-medium transition-colors duration-200">
+                                    Analyze Anomalies →
+                                </a>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold mt-2">Price Anomaly Detection</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Detect crops whose prices deviate more than ±20% from average prices across all markets.
-                        </p>
-                        <a href="pages/price_anomaly.php"
-                            class="block w-full text-center px-4 py-2.5 bg-rose-400 hover:bg-rose-500 text-white rounded-lg font-medium transition-colors duration-200">
-                            Analyze Anomalies →
-                        </a>
+
+                        <!-- Feature A5: Most Profitable Crop by Region -->
+                        <div
+                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
+                            <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-3xl">🏆</span>
+                                </div>
+                                <h3 class="text-xl font-bold mt-2">Top Crop by Region</h3>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
+                                    Find which crop generates the highest revenue in each region.
+                                </p>
+                                <a href="pages/top_crop_region.php"
+                                    class="block w-full text-center px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors duration-200">
+                                    Find Top Crops →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Top Farmer by Region Feature -->
+                        <div
+                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
+                            <div class="bg-gradient-to-r from-sky-400 to-sky-500 text-white px-6 py-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-3xl">👨‍🌾</span>
+                                </div>
+                                <h3 class="text-xl font-bold mt-2">Top Farmer by Region</h3>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
+                                    Identify the farmer with highest total revenue in each region.
+                                </p>
+                                <a href="pages/top_farmer_region.php"
+                                    class="block w-full text-center px-4 py-2.5 bg-sky-400 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors duration-200">
+                                    View Top Farmers →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Feature: Inter-Market Price Gap Analysis -->
+                        <div
+                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
+                            <div class="bg-gradient-to-r from-violet-500 to-violet-600 text-white px-6 py-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-3xl">🔄</span>
+                                </div>
+                                <h3 class="text-xl font-bold mt-2">Price Gap Analysis</h3>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
+                                    Compare crop prices across markets to identify significant price differences.
+                                </p>
+                                <a href="pages/market_price_gap.php"
+                                    class="block w-full text-center px-4 py-2.5 bg-violet-500 hover:bg-violet-600 text-white rounded-lg font-medium transition-colors duration-200">
+                                    Analyze Price Gaps →
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Feature: Historical Price Trend Analysis -->
+                        <div
+                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
+                            <div class="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-5">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-3xl">📈</span>
+                                </div>
+                                <h3 class="text-xl font-bold mt-2">Price Trend Analysis</h3>
+                            </div>
+                            <div class="p-6 flex flex-col flex-grow">
+                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
+                                    Analyze month-wise price trends using historical price data.
+                                </p>
+                                <a href="pages/price_trend.php"
+                                    class="block w-full text-center px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors duration-200">
+                                    View Price Trends →
+                                </a>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
-                <!-- Feature A5: Most Profitable Crop by Region -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">🏆</span>
+                <!-- Column 3: Farmer Portal Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="lg:sticky lg:top-6">
+                        <!-- Farmer Portal Card - Sidebar -->
+                        <div
+                            class="feature-card bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border-2 border-amber-200">
+                            <div
+                                class="bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-6 py-8">
+                                <div class="text-center">
+                                    <span class="text-5xl block mb-3">🌾</span>
+                                    <h3 class="text-2xl font-bold">Farmer Portal</h3>
+                                    <p class="text-amber-100 text-sm mt-2">Secure Data Access</p>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-amber-500 mt-0.5">✓</span>
+                                        <p class="text-slate-600 text-sm">Update crop supply records</p>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-amber-500 mt-0.5">✓</span>
+                                        <p class="text-slate-600 text-sm">Secure 6-digit verification</p>
+                                    </div>
+                                    <div class="flex items-start space-x-3">
+                                        <span class="text-amber-500 mt-0.5">✓</span>
+                                        <p class="text-slate-600 text-sm">Contribute to market intelligence</p>
+                                    </div>
+                                </div>
+                                <hr class="my-5 border-slate-200">
+                                <p class="text-slate-500 text-sm mb-5 text-center">
+                                    Registered farmers can manage their data securely
+                                </p>
+                                <a href="farmer/verify_code.php"
+                                    class="block w-full text-center px-5 py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl font-semibold text-base transition-all duration-200 shadow-md hover:shadow-lg">
+                                    Enter Farmer Portal →
+                                </a>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-bold mt-2">Top Crop by Region</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Find which crop generates the highest revenue in each region.
-                        </p>
-                        <a href="pages/top_crop_region.php"
-                            class="block w-full text-center px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors duration-200">
-                            Find Top Crops →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Top Farmer by Region Feature -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-sky-400 to-sky-500 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">👨‍🌾</span>
-                        </div>
-                        <h3 class="text-xl font-bold mt-2">Top Farmer by Region</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Identify the farmer with highest total revenue in each region.
-                        </p>
-                        <a href="pages/top_farmer_region.php"
-                            class="block w-full text-center px-4 py-2.5 bg-sky-400 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors duration-200">
-                            View Top Farmers →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Farmer Portal: Crop Data Update -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-amber-400 to-amber-500 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">🌾</span>
-                        </div>
-                        <h3 class="text-xl font-bold mt-2">Farmer Portal</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Farmers can update their crop supply data using their unique 6-digit code.
-                        </p>
-                        <a href="farmer/verify_code.php"
-                            class="block w-full text-center px-4 py-2.5 bg-amber-400 hover:bg-amber-500 text-white rounded-lg font-medium transition-colors duration-200">
-                            Enter Farmer Portal →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Feature: Inter-Market Price Gap Analysis -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-violet-500 to-violet-600 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">🔄</span>
-                        </div>
-                        <h3 class="text-xl font-bold mt-2">Price Gap Analysis</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Compare crop prices across markets to identify significant price differences.
-                        </p>
-                        <a href="pages/market_price_gap.php"
-                            class="block w-full text-center px-4 py-2.5 bg-violet-500 hover:bg-violet-600 text-white rounded-lg font-medium transition-colors duration-200">
-                            Analyze Price Gaps →
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Feature: Historical Price Trend Analysis -->
-                <div
-                    class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                    <div class="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-5">
-                        <div class="flex items-center justify-between">
-                            <span class="text-3xl">📈</span>
-                        </div>
-                        <h3 class="text-xl font-bold mt-2">Price Trend Analysis</h3>
-                    </div>
-                    <div class="p-6 flex flex-col flex-grow">
-                        <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                            Analyze month-wise price trends using historical price data.
-                        </p>
-                        <a href="pages/price_trend.php"
-                            class="block w-full text-center px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors duration-200">
-                            View Price Trends →
-                        </a>
                     </div>
                 </div>
 
