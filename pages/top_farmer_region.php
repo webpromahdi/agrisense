@@ -1,22 +1,16 @@
 <?php
-/**
- * AgriSense - Top Performing Farmer by Region
- * 
- * Analytical feature showing highest revenue farmer per region
- * All calculations done in SQL (no PHP calculations)
- */
-
+require_once __DIR__ . '/../controllers/AuthController.php';
 require_once __DIR__ . '/../db/connection.php';
+
+AuthController::requireAuth();
+$currentUser = AuthController::getCurrentUser();
 
 $results = [];
 $error = null;
 
-// Execute the analysis query
 $pdo = getConnection();
 if ($pdo) {
     try {
-        // SQL Query: Top Performing Farmer by Region
-        // Revenue = SUM(quantity × price_per_unit)
         $sql = "
             SELECT 
                 farmer_revenue.region_name,
@@ -80,175 +74,186 @@ if ($pdo) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Performing Farmer by Region - AgriSense</title>
+    <title>Top Farmer by Region - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+        }
+        
+        .gold-bg {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+        }
+        
+        .silver-bg {
+            background: linear-gradient(135deg, rgba(156, 163, 175, 0.1) 0%, rgba(107, 114, 128, 0.1) 100%);
+        }
+        
+        .bronze-bg {
+            background: linear-gradient(135deg, rgba(180, 83, 9, 0.1) 0%, rgba(146, 64, 14, 0.1) 100%);
+        }
+    </style>
 </head>
-
-<body class="bg-slate-50 min-h-screen">
+<body class="min-h-screen">
     <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <a href="../index.php" class="flex items-center space-x-2 hover:opacity-90 transition-opacity">
-                    <span class="text-2xl">🌾</span>
-                    <span class="text-xl font-bold">AgriSense</span>
-                </a>
-                <span class="text-green-100 text-sm font-medium">Top Farmers by Region</span>
+    <nav class="glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <a href="../index.php" class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                            <span class="text-xl text-white">🌾</span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
+                            <p class="text-xs text-emerald-600">Top Farmer by Region</p>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="hidden md:block text-right">
+                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($currentUser['name']) ?></p>
+                        <p class="text-xs text-emerald-600"><?= htmlspecialchars($currentUser['email']) ?></p>
+                    </div>
+                    <a href="/agrisense/auth/logout.php" 
+                       class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                        Logout
+                    </a>
+                </div>
             </div>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
-        <!-- Page Header -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-6 border border-slate-100">
-            <div class="flex items-center space-x-3 mb-3">
-                <span class="text-3xl">👨‍🌾</span>
-                <h1 class="text-2xl md:text-3xl font-bold text-slate-800">Top Performing Farmer by Region</h1>
-            </div>
-            <p class="text-slate-600 leading-relaxed">
-                Identifies the farmer who has generated the highest total revenue in each region based on market supply
-                transactions.
-            </p>
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Top Performing Farmer by Region</h1>
+            <p class="text-gray-600">Highest revenue generating farmers in each region</p>
         </div>
 
         <!-- Error Display -->
         <?php if ($error): ?>
-            <div class="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 mb-6 rounded-lg">
-                <p class="font-bold">Error</p>
-                <p><?= htmlspecialchars($error) ?></p>
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+                <p class="font-medium">Error</p>
+                <p class="text-sm"><?= htmlspecialchars($error) ?></p>
             </div>
         <?php endif; ?>
 
         <!-- Results -->
         <?php if (!empty($results)): ?>
-
-            <!-- Summary Cards -->
             <?php
             $totalRevenue = array_sum(array_column($results, 'total_revenue'));
             $totalQuantity = array_sum(array_column($results, 'total_quantity'));
             $regionCount = count($results);
-            $topFarmer = $results[0] ?? null;
+            $topRegion = $results[0] ?? null;
             ?>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-emerald-500">
-                    <p class="text-sm text-slate-500 font-medium">Regions Covered</p>
-                    <p class="text-3xl font-bold text-emerald-600"><?= $regionCount ?></p>
-                    <p class="text-xs text-slate-400">with farmer data</p>
+            
+            <!-- Summary Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div class="glass-card rounded-xl p-4">
+                    <p class="text-sm text-gray-500">Total Regions</p>
+                    <p class="text-2xl font-bold text-emerald-600"><?= $regionCount ?></p>
+                    <p class="text-xs text-gray-500">with farmer data</p>
                 </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-sky-500">
-                    <p class="text-sm text-slate-500 font-medium">Total Revenue</p>
-                    <p class="text-2xl font-bold text-sky-600">৳<?= number_format($totalRevenue) ?></p>
-                    <p class="text-xs text-slate-400">by top farmers</p>
+                <div class="glass-card rounded-xl p-4">
+                    <p class="text-sm text-gray-500">Total Revenue</p>
+                    <p class="text-2xl font-bold text-emerald-600">৳<?= number_format($totalRevenue) ?></p>
+                    <p class="text-xs text-gray-500">from top farmers</p>
                 </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-amber-500">
-                    <p class="text-sm text-slate-500 font-medium">Total Quantity</p>
+                <div class="glass-card rounded-xl p-4">
+                    <p class="text-sm text-gray-500">Total Quantity</p>
                     <p class="text-2xl font-bold text-amber-600"><?= number_format($totalQuantity) ?></p>
-                    <p class="text-xs text-slate-400">kg supplied</p>
+                    <p class="text-xs text-gray-500">kg supplied</p>
                 </div>
-                <?php if ($topFarmer): ?>
-                    <div
-                        class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border-l-4 border-violet-500">
-                        <p class="text-sm text-slate-500 font-medium">Highest Earner</p>
-                        <p class="text-xl font-bold text-violet-600"><?= htmlspecialchars($topFarmer['farmer_name']) ?></p>
-                        <p class="text-sm text-slate-500"><?= htmlspecialchars($topFarmer['region_name']) ?></p>
+                <?php if ($topRegion): ?>
+                    <div class="glass-card rounded-xl p-4">
+                        <p class="text-sm text-gray-500">Top Farmer</p>
+                        <p class="text-lg font-bold text-emerald-600"><?= htmlspecialchars($topRegion['farmer_name']) ?></p>
+                        <p class="text-sm text-gray-500"><?= htmlspecialchars($topRegion['region_name']) ?></p>
                     </div>
                 <?php endif; ?>
             </div>
 
             <!-- Results Table -->
-            <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-100">
-                <div class="px-6 py-4 bg-slate-50 border-b border-slate-200">
-                    <h2 class="text-lg font-semibold text-slate-700">
-                        🏆 Top Farmers by Region
+            <div class="glass-card rounded-xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-emerald-100 bg-emerald-50">
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Most Profitable Farmers by Region
+                        <span class="text-sm font-normal text-gray-500">
+                            (Highest revenue generating farmer in each region)
+                        </span>
                     </h2>
-                    <p class="text-sm text-slate-500 mt-1">
-                        Each region shows the farmer with the highest total revenue from market supplies
-                    </p>
                 </div>
                 <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead class="bg-slate-50 border-b border-slate-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
                             <tr>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Rank
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Region
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    State
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Top Farmer
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Total Revenue
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Quantity
-                                </th>
-                                <th
-                                    class="px-6 py-3 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                                    Supplies
-                                </th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Rank</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">State</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Top Farmer</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Total Revenue</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Supplies</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100">
+                        <tbody class="divide-y divide-gray-200">
                             <?php foreach ($results as $index => $row): ?>
                                 <?php
                                 $rank = $index + 1;
-                                $bgColor = '';
-                                if ($rank == 1)
-                                    $bgColor = 'bg-amber-50';
-                                elseif ($rank == 2)
-                                    $bgColor = 'bg-slate-50';
-                                elseif ($rank == 3)
-                                    $bgColor = 'bg-orange-50';
+                                $bgClass = '';
+                                if ($rank == 1) $bgClass = 'gold-bg';
+                                elseif ($rank == 2) $bgClass = 'silver-bg';
+                                elseif ($rank == 3) $bgClass = 'bronze-bg';
                                 ?>
-                                <tr class="<?= $bgColor ?> hover:bg-slate-50 transition-colors duration-150">
+                                <tr class="hover:bg-gray-50 <?= $bgClass ?>">
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <?php if ($rank <= 3): ?>
                                             <span class="text-2xl">
                                                 <?= $rank == 1 ? '🥇' : ($rank == 2 ? '🥈' : '🥉') ?>
                                             </span>
                                         <?php else: ?>
-                                            <span class="text-lg font-medium text-slate-500"><?= $rank ?></span>
+                                            <span class="text-lg font-medium text-gray-500"><?= $rank ?></span>
                                         <?php endif; ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="font-medium text-slate-900"><?= htmlspecialchars($row['region_name']) ?></span>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                        <?= htmlspecialchars($row['region_name']) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-slate-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                                         <?= htmlspecialchars($row['state']) ?>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-50 text-sky-700">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-sky-50 text-sky-700">
                                             👨‍🌾 <?= htmlspecialchars($row['farmer_name']) ?>
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono font-bold text-emerald-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold text-emerald-600">
                                         ৳<?= number_format($row['total_revenue']) ?>
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
-                                        <?= number_format($row['total_quantity']) ?>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600">
+                                        <?= number_format($row['total_quantity']) ?> kg
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-right font-mono text-slate-600">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-gray-600">
                                         <?= number_format($row['supply_count']) ?>
                                     </td>
                                 </tr>
@@ -257,28 +262,19 @@ if ($pdo) {
                     </table>
                 </div>
             </div>
-
-            <!-- Back Link -->
-            <div class="mt-8">
-                <a href="../index.php"
-                    class="inline-flex items-center text-slate-600 hover:text-green-600 transition-colors duration-200">
-                    <span class="mr-2">←</span> Back to Dashboard
-                </a>
-            </div>
-
         <?php else: ?>
-            <div class="bg-amber-50 border-l-4 border-amber-400 text-amber-700 p-4 rounded-lg">
-                <p class="font-bold">⚠️ No Data Found</p>
-                <p>No market supply records found for farmer revenue analysis. Please ensure:</p>
-                <ul class="list-disc list-inside mt-2 ml-4">
-                    <li>Market supply data exists in the database</li>
-                    <li>Farmers are properly linked to regions</li>
-                    <li>Quantity and price data is available</li>
-                </ul>
+            <div class="glass-card rounded-xl p-6">
+                <div class="text-center">
+                    <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.998-.833-2.732 0L4.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No data found</h3>
+                    <p class="text-gray-600">No market supply records found for farmer revenue analysis.</p>
+                </div>
             </div>
         <?php endif; ?>
-
     </main>
 </body>
-
 </html>

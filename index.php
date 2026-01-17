@@ -1,79 +1,120 @@
 <?php
-/**
- * AgriSense - Agricultural Market Intelligence System
- * Main Dashboard / Landing Page
- * 
- * Category A: Market Intelligence Features
- */
-
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/db/connection.php';
 
-// Require authentication - redirect to login if not logged in
 AuthController::requireAuth();
-
-// Get current user data
 $currentUser = AuthController::getCurrentUser();
 
-// Quick stats using SQL
 $stats = [];
 $pdo = getConnection();
 
 if ($pdo) {
     try {
-        // Get quick statistics
         $stats['crops'] = $pdo->query("SELECT COUNT(*) FROM crops")->fetchColumn();
         $stats['markets'] = $pdo->query("SELECT COUNT(*) FROM markets")->fetchColumn();
         $stats['regions'] = $pdo->query("SELECT COUNT(*) FROM regions")->fetchColumn();
         $stats['farmers'] = $pdo->query("SELECT COUNT(*) FROM farmers")->fetchColumn();
         $stats['price_records'] = $pdo->query("SELECT COUNT(*) FROM market_prices")->fetchColumn();
         $stats['supply_records'] = $pdo->query("SELECT COUNT(*) FROM market_supply")->fetchColumn();
-    } catch (PDOException $e) {
-        // Stats unavailable, continue without them
-    }
+    } catch (PDOException $e) {}
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgriSense - Agricultural Market Intelligence System</title>
+    <title>Dashboard - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Smooth hover transitions for cards */
-        .feature-card {
-            transition: all 0.3s ease-in-out;
+        body {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            min-height: 100vh;
         }
-
-        .feature-card:hover {
-            transform: translateY(-4px);
+        
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.3);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(34, 197, 94, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        }
+        
+        .farmer-portal {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(34, 197, 94, 0.3);
+            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+        }
+        
+        .feature-icon {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border: 1px solid rgba(34, 197, 94, 0.2);
         }
     </style>
 </head>
-
-<body class="bg-slate-50 min-h-screen">
-    <!-- Navigation -->
-    <nav class="bg-gradient-to-r from-green-700 to-green-600 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 py-4">
-            <div class="flex justify-between items-center">
-                <div class="flex items-center space-x-3">
-                    <span class="text-3xl">🌾</span>
-                    <div>
-                        <h1 class="text-2xl font-bold tracking-tight">AgriSense</h1>
-                        <p class="text-xs text-green-100 font-medium">Agricultural Market Intelligence</p>
+<body class="min-h-screen">
+    <!-- Simple Top Navigation -->
+    <nav class="glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                            <span class="text-xl text-white">🌾</span>
+                        </div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
+                            <p class="text-xs text-emerald-600">Market Intelligence</p>
+                        </div>
                     </div>
                 </div>
-
-                <!-- User Info & Logout -->
+                
                 <div class="flex items-center space-x-4">
-                    <div class="text-right hidden sm:block">
-                        <p class="text-sm font-medium"><?= htmlspecialchars($currentUser['name']) ?></p>
-                        <p class="text-xs text-green-100"><?= htmlspecialchars($currentUser['email']) ?></p>
+                    <div class="hidden md:block text-right">
+                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($currentUser['name']) ?></p>
+                        <p class="text-xs text-emerald-600"><?= htmlspecialchars($currentUser['email']) ?></p>
                     </div>
-                    <a href="/agrisense/auth/logout.php"
-                        class="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-white/20">
+                    <a href="/agrisense/auth/logout.php" 
+                       class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
                         Logout
                     </a>
                 </div>
@@ -82,222 +123,246 @@ if ($pdo) {
     </nav>
 
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Welcome Section -->
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Welcome back, <?= htmlspecialchars(explode(' ', $currentUser['name'])[0]) ?>! 👋</h1>
+            <p class="text-gray-600">Here's your agricultural market intelligence overview</p>
+        </div>
 
-        <!-- Quick Stats -->
+        <!-- Farmer Portal (Prominently Featured) -->
+        <div class="farmer-portal rounded-2xl p-8 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center mr-4">
+                            <span class="text-2xl text-white">👨‍🌾</span>
+                        </div>
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-800">Farmer Portal</h2>
+                            <p class="text-emerald-600">Secure data submission for registered farmers</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 mt-4">
+                        <li class="flex items-center text-sm text-gray-700">
+                            <svg class="w-4 h-4 text-emerald-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Update crop supply records
+                        </li>
+                        <li class="flex items-center text-sm text-gray-700">
+                            <svg class="w-4 h-4 text-emerald-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            6-digit secure verification
+                        </li>
+                        <li class="flex items-center text-sm text-gray-700">
+                            <svg class="w-4 h-4 text-emerald-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Contribute to market intelligence
+                        </li>
+                    </ul>
+                </div>
+                <a href="farmer/verify_code.php" 
+                   class="btn-primary px-8 py-3 rounded-xl font-medium text-lg inline-flex items-center shadow-lg">
+                    <span class="mr-3">🚜</span> Enter Farmer Portal →
+                </a>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
         <?php if (!empty($stats)): ?>
-            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-10">
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['crops'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Crops</p>
-                </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['markets'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Markets</p>
-                </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['regions'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Regions</p>
-                </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['farmers'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Farmers</p>
-                </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['price_records'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Price Records</p>
-                </div>
-                <div
-                    class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 p-5 text-center border border-slate-100">
-                    <p class="text-2xl font-bold text-emerald-600"><?= $stats['supply_records'] ?? '-' ?></p>
-                    <p class="text-sm text-slate-500 font-medium">Supply Records</p>
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Crops</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['crops'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <span class="text-emerald-600">🌾</span>
+                    </div>
                 </div>
             </div>
+            
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Markets</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['markets'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Regions</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['regions'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Farmers</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['farmers'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <span class="text-emerald-600">👨‍🌾</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Price Records</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['price_records'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="stats-card rounded-xl p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Supply Records</p>
+                        <p class="text-2xl font-bold text-emerald-600 mt-1"><?= $stats['supply_records'] ?? '-' ?></p>
+                    </div>
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-100 to-green-100 border border-emerald-200 flex items-center justify-center">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
         <?php endif; ?>
 
-        <!-- Main Dashboard Grid: Features + Farmer Portal Sidebar -->
-        <section class="mb-12">
-            <!-- Section Header -->
-            <div class="flex items-start mb-8">
-                <div class="w-1 h-12 bg-gradient-to-b from-green-500 to-emerald-600 rounded-full mr-4"></div>
-                <div>
-                    <h2 class="text-2xl md:text-3xl font-bold text-slate-800">Market Intelligence & Farmer Access</h2>
-                    <p class="text-slate-500 mt-1">Data-driven insights and secure farmer data management</p>
-                </div>
-            </div>
-
-            <!-- 3-Column Grid Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                <!-- Columns 1 & 2: Market Intelligence Feature Cards -->
-                <div class="lg:col-span-2">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-                        <!-- Feature A1: Price Anomaly Detection -->
-                        <div
-                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                            <div class="bg-gradient-to-r from-rose-400 to-rose-500 text-white px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-3xl">📊</span>
-                                </div>
-                                <h3 class="text-xl font-bold mt-2">Price Anomaly Detection</h3>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
-                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                                    Detect crops whose prices deviate more than ±20% from average prices across all
-                                    markets.
-                                </p>
-                                <a href="pages/price_anomaly.php"
-                                    class="block w-full text-center px-4 py-2.5 bg-rose-400 hover:bg-rose-500 text-white rounded-lg font-medium transition-colors duration-200">
-                                    Analyze Anomalies →
-                                </a>
-                            </div>
+        <!-- Analytics Features -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-6">Market Analytics</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Price Anomaly -->
+                <a href="pages/price_anomaly.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">📊</span>
                         </div>
-
-                        <!-- Feature A5: Most Profitable Crop by Region -->
-                        <div
-                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                            <div class="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-3xl">🏆</span>
-                                </div>
-                                <h3 class="text-xl font-bold mt-2">Top Crop by Region</h3>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
-                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                                    Find which crop generates the highest revenue in each region.
-                                </p>
-                                <a href="pages/top_crop_region.php"
-                                    class="block w-full text-center px-4 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium transition-colors duration-200">
-                                    Find Top Crops →
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Top Farmer by Region Feature -->
-                        <div
-                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                            <div class="bg-gradient-to-r from-sky-400 to-sky-500 text-white px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-3xl">👨‍🌾</span>
-                                </div>
-                                <h3 class="text-xl font-bold mt-2">Top Farmer by Region</h3>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
-                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                                    Identify the farmer with highest total revenue in each region.
-                                </p>
-                                <a href="pages/top_farmer_region.php"
-                                    class="block w-full text-center px-4 py-2.5 bg-sky-400 hover:bg-sky-500 text-white rounded-lg font-medium transition-colors duration-200">
-                                    View Top Farmers →
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Feature: Inter-Market Price Gap Analysis -->
-                        <div
-                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                            <div class="bg-gradient-to-r from-violet-500 to-violet-600 text-white px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-3xl">🔄</span>
-                                </div>
-                                <h3 class="text-xl font-bold mt-2">Price Gap Analysis</h3>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
-                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                                    Compare crop prices across markets to identify significant price differences.
-                                </p>
-                                <a href="pages/market_price_gap.php"
-                                    class="block w-full text-center px-4 py-2.5 bg-violet-500 hover:bg-violet-600 text-white rounded-lg font-medium transition-colors duration-200">
-                                    Analyze Price Gaps →
-                                </a>
-                            </div>
-                        </div>
-
-                        <!-- Feature: Historical Price Trend Analysis -->
-                        <div
-                            class="feature-card bg-white rounded-xl shadow-md hover:shadow-xl overflow-hidden border border-slate-100 flex flex-col">
-                            <div class="bg-gradient-to-r from-teal-500 to-teal-600 text-white px-6 py-5">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-3xl">📈</span>
-                                </div>
-                                <h3 class="text-xl font-bold mt-2">Price Trend Analysis</h3>
-                            </div>
-                            <div class="p-6 flex flex-col flex-grow">
-                                <p class="text-slate-600 mb-5 leading-relaxed flex-grow">
-                                    Analyze month-wise price trends using historical price data.
-                                </p>
-                                <a href="pages/price_trend.php"
-                                    class="block w-full text-center px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors duration-200">
-                                    View Price Trends →
-                                </a>
-                            </div>
-                        </div>
-
+                        <h3 class="text-lg font-semibold text-gray-800">Price Anomaly</h3>
                     </div>
-                </div>
-
-                <!-- Column 3: Farmer Portal Sidebar -->
-                <div class="lg:col-span-1">
-                    <div class="lg:sticky lg:top-6">
-                        <!-- Farmer Portal Card - Sidebar -->
-                        <div
-                            class="feature-card bg-white rounded-2xl shadow-lg hover:shadow-2xl overflow-hidden border-2 border-amber-200">
-                            <div
-                                class="bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500 text-white px-6 py-8">
-                                <div class="text-center">
-                                    <span class="text-5xl block mb-3">🌾</span>
-                                    <h3 class="text-2xl font-bold">Farmer Portal</h3>
-                                    <p class="text-amber-100 text-sm mt-2">Secure Data Access</p>
-                                </div>
-                            </div>
-                            <div class="p-6">
-                                <div class="space-y-4">
-                                    <div class="flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5">✓</span>
-                                        <p class="text-slate-600 text-sm">Update crop supply records</p>
-                                    </div>
-                                    <div class="flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5">✓</span>
-                                        <p class="text-slate-600 text-sm">Secure 6-digit verification</p>
-                                    </div>
-                                    <div class="flex items-start space-x-3">
-                                        <span class="text-amber-500 mt-0.5">✓</span>
-                                        <p class="text-slate-600 text-sm">Contribute to market intelligence</p>
-                                    </div>
-                                </div>
-                                <hr class="my-5 border-slate-200">
-                                <p class="text-slate-500 text-sm mb-5 text-center">
-                                    Registered farmers can manage their data securely
-                                </p>
-                                <a href="farmer/verify_code.php"
-                                    class="block w-full text-center px-5 py-3.5 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white rounded-xl font-semibold text-base transition-all duration-200 shadow-md hover:shadow-lg">
-                                    Enter Farmer Portal →
-                                </a>
-                            </div>
-                        </div>
+                    <p class="text-gray-600 text-sm mb-4">Detect unusual price movements across markets</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>Analyze Anomalies</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
                     </div>
-                </div>
+                </a>
 
+                <!-- Price Gap -->
+                <a href="pages/market_price_gap.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">🔄</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">Price Gap</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Compare crop prices across different markets</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>Compare Markets</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Price Trend -->
+                <a href="pages/price_trend.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">📈</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">Price Trend</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Historical price analysis and trends</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>View Trends</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Market Saturation -->
+                <a href="pages/market_saturation.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">📦</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">Market Saturation</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Supply concentration and market analysis</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>Analyze Supply</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Top Crop -->
+                <a href="pages/top_crop_region.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">🏆</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">Top Crop</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Highest revenue generating crops by region</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>View Rankings</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </div>
+                </a>
+
+                <!-- Top Farmer -->
+                <a href="pages/top_farmer_region.php" class="glass-card rounded-xl p-6 block hover:no-underline">
+                    <div class="flex items-center mb-4">
+                        <div class="w-12 h-12 rounded-lg feature-icon flex items-center justify-center mr-4">
+                            <span class="text-2xl text-emerald-600">👨‍🌾</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800">Top Farmer</h3>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Leading farmers by revenue contribution</p>
+                    <div class="flex items-center text-emerald-600 font-medium">
+                        <span>View Leaders</span>
+                        <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                        </svg>
+                    </div>
+                </a>
             </div>
-        </section>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 py-6">
-            <p class="text-center text-sm text-slate-500">
-                AgriSense — Agricultural Market Intelligence & Analytical Database System
-            </p>
         </div>
-    </footer>
-
+    </main>
 </body>
-
 </html>
