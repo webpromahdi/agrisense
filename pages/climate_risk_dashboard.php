@@ -22,7 +22,7 @@ if ($pdo) {
         $tableExists = $checkTable->rowCount() > 0;
 
         if (!$tableExists) {
-            $error = "Climate risk table not found. Please run the sql/climate_risk_advisory.sql script first.";
+            $error = "Climate risk table not found. Please run the sql/schema.sql script first.";
         }
     } catch (PDOException $e) {
         $error = "Database Error: " . $e->getMessage();
@@ -477,7 +477,7 @@ foreach ($results as $row) {
                     </div>
                     <h3 class="text-lg font-medium text-gray-900 mb-2">No climate risk data available</h3>
                     <p class="text-gray-600">Please run the <code
-                            class="bg-gray-100 px-2 py-1 rounded">sql/climate_risk_advisory.sql</code> script to populate
+                            class="bg-gray-100 px-2 py-1 rounded">sql/schema.sql</code> script to populate
                         the climate risk data.</p>
                 </div>
             </div>

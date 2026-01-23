@@ -337,10 +337,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
                             </path>
                         </svg>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">No comparison data available</h3>
-                    <p class="text-gray-600">No matching price records found for year-over-year comparison.</p>
-                    <p class="text-sm text-gray-500 mt-2">This requires price data from both the current period and the same
-                        period last year.</p>
+                    <?php if ($selectedMarket): ?>
+                        <?php
+                        $selectedMarketName = '';
+                        foreach ($markets as $m) {
+                            if ($m['market_id'] == $selectedMarket) {
+                                $selectedMarketName = $m['market_name'];
+                                break;
+                            }
+                        }
+                        ?>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Insufficient historical data for this market</h3>
+                        <p class="text-gray-600">No year-over-year comparison data available for <strong><?= htmlspecialchars($selectedMarketName) ?></strong>.</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            This market may not have complete price history records for both January 2025 and January 2026.
+                        </p>
+                        <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-left">
+                            <p class="text-sm text-blue-800">
+                                <strong>💡 Tip:</strong> Try selecting "All Markets" to see available comparisons across all regions.
+                            </p>
+                        </div>
+                    <?php else: ?>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No comparison data available</h3>
+                        <p class="text-gray-600">No matching price records found for year-over-year comparison.</p>
+                        <p class="text-sm text-gray-500 mt-2">
+                            This requires price data from both the current period (January 2026) and the same period last year (January 2025).
+                        </p>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>

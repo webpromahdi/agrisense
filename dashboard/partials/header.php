@@ -79,17 +79,17 @@
                         'success-dark': '#15803D',
                         'success-light': '#DCFCE7',
                         'success-foreground': '#FFFFFF',
-                        
+
                         warning: '#D97706',
                         'warning-dark': '#B45309',
                         'warning-light': '#FEF3C7',
                         'warning-foreground': '#FFFFFF',
-                        
+
                         destructive: '#DC2626',
                         'destructive-dark': '#B91C1C',
                         'destructive-light': '#FEE2E2',
                         'destructive-foreground': '#FFFFFF',
-                        
+
                         info: '#2563EB',
                         'info-dark': '#1D4ED8',
                         'info-light': '#DBEAFE',
@@ -120,16 +120,45 @@
 
 <body class="min-h-screen bg-background">
 
+    <?php
+    // Detect current page for active navigation highlighting
+    $currentScript = basename($_SERVER['SCRIPT_NAME']);
+    $currentPage = $currentScript;
+
+    // Map pages to nav identifiers
+    $navPages = [
+        'index.php' => 'dashboard',
+        'smart_market.php' => 'smart_market',
+        'seasonal_price_memory.php' => 'seasonal_price',
+        'oversupply_alert.php' => 'oversupply',
+        'climate_risk_dashboard.php' => 'climate_risk',
+        'market_price_gap.php' => 'price_gap',
+        'price_trend.php' => 'price_trend',
+    ];
+
+    $activeNav = isset($navPages[$currentPage]) ? $navPages[$currentPage] : '';
+
+    // Helper function for nav link classes
+    function getNavLinkClass($navId, $activeNav)
+    {
+        $baseClasses = 'flex items-center gap-2 text-sm font-medium transition-colors';
+        if ($navId === $activeNav) {
+            return $baseClasses . ' text-primary font-semibold border-b-2 border-primary pb-1 -mb-1';
+        }
+        return $baseClasses . ' text-text-body hover:text-primary';
+    }
+    ?>
+
     <!-- Primary Navbar - Deep Forest Green -->
     <nav class="bg-navbar h-[60px] flex items-center justify-between px-6 shadow-navbar">
-        <div class="flex items-center gap-3">
+        <a href="/agrisense/index.php" class="flex items-center gap-3 hover:opacity-90 transition-opacity">
             <div class="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center border border-white/20">
                 <span class="text-xl text-white">🌾</span>
             </div>
             <div class="text-navbar-foreground text-xl font-semibold tracking-tight">
                 AgriSense
             </div>
-        </div>
+        </a>
 
         <div class="flex items-center gap-4">
             <!-- Farmer Portal Button - Accent Color -->
@@ -143,7 +172,8 @@
             <?php if (isset($currentUser) && $currentUser): ?>
                 <div class="flex items-center gap-3 ml-2 pl-4 border-l border-white/20">
                     <!-- User Avatar -->
-                    <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30">
+                    <div
+                        class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30">
                         <?= strtoupper(substr($currentUser['name'], 0, 1)) ?>
                     </div>
                     <!-- User Name -->
@@ -155,7 +185,8 @@
                     <a href="/agrisense/auth/logout.php"
                         class="ml-2 flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all border border-white/20">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
                         <span>Logout</span>
                     </a>
@@ -167,8 +198,9 @@
     <!-- Secondary Navbar - Clean White with Strong Contrast -->
     <nav class="bg-subnav h-[50px] flex items-center px-6 shadow-sm border-b border-border">
         <div class="flex items-center gap-6">
-            <!-- Dashboard (active) -->
-            <a href="/agrisense/" class="flex items-center gap-2 text-sm text-primary font-semibold border-b-2 border-primary pb-1 -mb-1">
+            <!-- Dashboard -->
+            <a href="/agrisense/index.php"
+                class="<?= getNavLinkClass('dashboard', $activeNav) ?>">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
                     <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -179,42 +211,42 @@
 
             <!-- Smart Market -->
             <a href="/agrisense/pages/smart_market.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('smart_market', $activeNav) ?>">
                 <span>🎯</span>
                 <span>Smart Market</span>
             </a>
 
             <!-- Seasonal Price -->
             <a href="/agrisense/pages/seasonal_price_memory.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('seasonal_price', $activeNav) ?>">
                 <span>📅</span>
                 <span>Price Memory</span>
             </a>
 
             <!-- Over-Supply Alert -->
             <a href="/agrisense/pages/oversupply_alert.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('oversupply', $activeNav) ?>">
                 <span>⚠️</span>
                 <span>Over-Supply</span>
             </a>
 
             <!-- Climate Risk -->
             <a href="/agrisense/pages/climate_risk_dashboard.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('climate_risk', $activeNav) ?>">
                 <span>🌦️</span>
                 <span>Climate Risk</span>
             </a>
 
             <!-- Price Gap -->
             <a href="/agrisense/pages/market_price_gap.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('price_gap', $activeNav) ?>">
                 <span>🔄</span>
                 <span>Price Gap</span>
             </a>
 
             <!-- Price Trend -->
             <a href="/agrisense/pages/price_trend.php"
-                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                class="<?= getNavLinkClass('price_trend', $activeNav) ?>">
                 <span>📈</span>
                 <span>Price Trend</span>
             </a>
