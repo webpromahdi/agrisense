@@ -39,81 +39,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Submit Crop Supply - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* AgriSense - Professional Agriculture Theme */
         body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            background: #FAFAF9;
             min-height: 100vh;
         }
         
         .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+            background: #166534;
+            box-shadow: 0 2px 8px rgba(22, 101, 52, 0.15);
         }
         
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+            background: #FFFFFF;
+            border: 1px solid #E7E5E4;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
             transition: all 0.3s ease;
         }
         
         .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
             color: white;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
         
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 10px 20px rgba(22, 101, 52, 0.25);
+            background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
         }
         
         .farmer-portal {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(34, 197, 94, 0.3);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+            background: #DCFCE7;
+            border: 2px solid #BBF7D0;
+            box-shadow: 0 4px 12px rgba(22, 101, 52, 0.1);
         }
         
         .feature-icon {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            background: #DCFCE7;
+            border: 1px solid #BBF7D0;
         }
+
+        /* Text Colors */
+        .text-heading { color: #1C1917; }
+        .text-body { color: #44403C; }
+        .text-muted { color: #78716C; }
     </style>
 </head>
 <body class="min-h-screen">
-    <!-- Navigation -->
+    <!-- Navigation - Deep Forest Green -->
     <nav class="glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <a href="/agrisense/index.php" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center">
                             <span class="text-xl text-white">🌾</span>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
-                            <p class="text-xs text-emerald-600">Farmer Portal</p>
+                            <h1 class="text-xl font-bold text-white">AgriSense</h1>
+                            <p class="text-xs text-white/80 font-medium">Farmer Portal</p>
                         </div>
                     </a>
                 </div>
                 
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:block text-right">
-                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($farmerName) ?></p>
-                        <p class="text-xs text-emerald-600">Verified Farmer</p>
+                        <p class="text-sm font-semibold text-white"><?= htmlspecialchars($farmerName) ?></p>
+                        <p class="text-xs text-white/70">Verified Farmer</p>
                     </div>
                     <a href="update_crop.php?logout=1"
-                       class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                       class="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors font-medium">
                         Exit Portal
                     </a>
                 </div>
@@ -126,12 +127,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Header -->
         <div class="mb-8">
             <div class="flex items-center space-x-4 mb-4">
-                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center shadow-lg">
                     <span class="text-2xl text-white">👨‍🌾</span>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-800">Submit Crop Supply</h1>
-                    <p class="text-gray-600 mt-1">Enter your crop supply details for the market</p>
+                    <h1 class="text-2xl font-bold text-heading">Submit Crop Supply</h1>
+                    <p class="text-body mt-1">Enter your crop supply details for the market</p>
                 </div>
             </div>
         </div>
@@ -140,23 +141,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Success Message -->
             <div class="farmer-portal rounded-2xl p-8 mb-8">
                 <div class="flex items-center mb-6">
-                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center mr-4">
+                    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center mr-4">
                         <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-xl font-bold text-gray-800">Supply Submitted Successfully!</h2>
-                        <p class="text-emerald-600">Your crop supply data has been recorded in the system.</p>
+                        <h2 class="text-xl font-bold text-heading">Supply Submitted Successfully!</h2>
+                        <p class="text-green-700 font-medium">Your crop supply data has been recorded in the system.</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
                     <a href="update_crop.php"
-                        class="btn-primary px-6 py-3 rounded-xl font-medium text-lg text-center inline-flex items-center justify-center shadow-lg">
+                        class="btn-primary px-6 py-3 rounded-xl text-lg text-center inline-flex items-center justify-center shadow-lg">
                         <span class="mr-3">➕</span> Submit Another
                     </a>
                     <a href="/agrisense/index.php"
-                        class="glass-card px-6 py-3 rounded-xl font-medium text-lg text-center inline-flex items-center justify-center hover:bg-emerald-50 transition-colors">
+                        class="glass-card px-6 py-3 rounded-xl font-semibold text-lg text-center inline-flex items-center justify-center text-body hover:bg-gray-50 transition-colors">
                         <span class="mr-3">🏠</span> Go to Dashboard
                     </a>
                 </div>
@@ -165,14 +166,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Form -->
             <div class="glass-card rounded-2xl p-8">
                 <?php if (isset($errors['general'])): ?>
-                    <div class="mb-6 p-4 bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-xl text-red-700">
+                    <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
                         <div class="flex items-center">
                             <div class="w-6 h-6 rounded-full bg-red-100 flex items-center justify-center mr-3">
                                 <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
                             </div>
-                            <p class="font-medium"><?= htmlspecialchars($errors['general']) ?></p>
+                            <p class="font-semibold"><?= htmlspecialchars($errors['general']) ?></p>
                         </div>
                     </div>
                 <?php endif; ?>

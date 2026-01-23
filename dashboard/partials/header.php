@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agroxa - Dashboard</title>
-    
+    <title>AgriSense - Dashboard</title>
+
     <!-- Google Fonts - Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -18,28 +20,92 @@
                         sans: ['Poppins', 'sans-serif'],
                     },
                     colors: {
-                        background: 'hsl(210, 20%, 97%)',
-                        foreground: 'hsl(220, 20%, 20%)',
-                        card: 'hsl(0, 0%, 100%)',
-                        'card-foreground': 'hsl(220, 20%, 20%)',
-                        primary: 'hsl(231, 76%, 62%)',
-                        'primary-foreground': 'hsl(0, 0%, 100%)',
-                        muted: 'hsl(220, 14%, 96%)',
-                        'muted-foreground': 'hsl(220, 10%, 50%)',
-                        destructive: 'hsl(0, 72%, 51%)',
-                        'destructive-foreground': 'hsl(0, 0%, 100%)',
-                        success: 'hsl(142, 71%, 45%)',
-                        'success-foreground': 'hsl(0, 0%, 100%)',
-                        warning: 'hsl(38, 92%, 50%)',
-                        'warning-foreground': 'hsl(0, 0%, 100%)',
-                        border: 'hsl(220, 13%, 91%)',
-                        navbar: 'hsl(225, 24%, 22%)',
-                        'navbar-foreground': 'hsl(0, 0%, 100%)',
-                        subnav: 'hsl(0, 0%, 100%)',
-                        'subnav-foreground': 'hsl(220, 10%, 40%)',
+                        /* ========================================
+                           AgriSense - Professional Agriculture Palette
+                           Strong, Confident, Natural Colors
+                           ======================================== */
+
+                        /* Primary - Deep Forest/Emerald Green */
+                        primary: '#166534',
+                        'primary-light': '#15803d',
+                        'primary-dark': '#14532d',
+                        'primary-deeper': '#052e16',
+                        'primary-foreground': '#FFFFFF',
+
+                        /* Secondary - Warm Neutral Tones */
+                        secondary: '#FAFAF9',
+                        'secondary-dark': '#F5F5F4',
+                        'secondary-darker': '#E7E5E4',
+                        'secondary-foreground': '#166534',
+
+                        /* Accent - Harvest Amber/Golden */
+                        accent: '#D97706',
+                        'accent-light': '#F59E0B',
+                        'accent-dark': '#B45309',
+                        'accent-deeper': '#92400E',
+                        'accent-foreground': '#FFFFFF',
+
+                        /* Backgrounds - Clean & Neutral */
+                        background: '#FFFFFF',
+                        'background-alt': '#FAFAF9',
+                        'background-subtle': '#F5F5F4',
+                        foreground: '#1C1917',
+                        card: '#FFFFFF',
+                        'card-foreground': '#1C1917',
+
+                        /* Text - Strong Hierarchy with High Contrast */
+                        'text-heading': '#1C1917',
+                        'text-subheading': '#166534',
+                        'text-body': '#44403C',
+                        'text-muted': '#78716C',
+                        'text-subtle': '#A8A29E',
+
+                        /* UI Elements */
+                        muted: '#F5F5F4',
+                        'muted-foreground': '#78716C',
+                        border: '#E7E5E4',
+                        'border-strong': '#D6D3D1',
+
+                        /* Navbar - Deep Forest Green */
+                        navbar: '#166534',
+                        'navbar-dark': '#14532d',
+                        'navbar-foreground': '#FFFFFF',
+                        subnav: '#FFFFFF',
+                        'subnav-foreground': '#44403C',
+                        'subnav-active': '#166534',
+
+                        /* Status Colors - Vibrant & Clear */
+                        success: '#16A34A',
+                        'success-dark': '#15803D',
+                        'success-light': '#DCFCE7',
+                        'success-foreground': '#FFFFFF',
+                        
+                        warning: '#D97706',
+                        'warning-dark': '#B45309',
+                        'warning-light': '#FEF3C7',
+                        'warning-foreground': '#FFFFFF',
+                        
+                        destructive: '#DC2626',
+                        'destructive-dark': '#B91C1C',
+                        'destructive-light': '#FEE2E2',
+                        'destructive-foreground': '#FFFFFF',
+                        
+                        info: '#2563EB',
+                        'info-dark': '#1D4ED8',
+                        'info-light': '#DBEAFE',
+                        'info-foreground': '#FFFFFF',
+
+                        /* Earth Tones for Agriculture */
+                        earth: '#78350F',
+                        'earth-light': '#A16207',
+                        'earth-lighter': '#FEF3C7',
                     },
                     boxShadow: {
-                        card: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+                        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08)',
+                        'card-hover': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+                        'card-strong': '0 4px 12px -2px rgba(0, 0, 0, 0.12), 0 2px 6px -2px rgba(0, 0, 0, 0.08)',
+                        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+                        'navbar': '0 2px 8px -2px rgba(22, 101, 52, 0.2)',
                     }
                 }
             }
@@ -51,136 +117,101 @@
         }
     </style>
 </head>
+
 <body class="min-h-screen bg-background">
 
-    <!-- Primary Navbar -->
-    <nav class="bg-navbar h-[60px] flex items-center justify-between px-6">
-        <div class="text-navbar-foreground text-xl font-semibold italic">
-            Agroxa
+    <!-- Primary Navbar - Deep Forest Green -->
+    <nav class="bg-navbar h-[60px] flex items-center justify-between px-6 shadow-navbar">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center border border-white/20">
+                <span class="text-xl text-white">🌾</span>
+            </div>
+            <div class="text-navbar-foreground text-xl font-semibold tracking-tight">
+                AgriSense
+            </div>
         </div>
-        
+
         <div class="flex items-center gap-4">
             <!-- Search Input -->
             <div class="relative">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    class="bg-white/10 text-navbar-foreground placeholder-white/60 rounded px-4 py-1.5 text-sm w-48 focus:outline-none focus:ring-1 focus:ring-primary"
-                />
+                <input type="text" placeholder="Search..."
+                    class="bg-white/10 text-navbar-foreground placeholder-white/60 rounded-lg px-4 py-2 text-sm w-52 border border-white/15 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15" />
                 <!-- Search Icon (SVG) -->
-                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/60" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50"
+                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
             </div>
-            
-            <!-- Notification Bell -->
-            <button class="relative p-2 text-white/80 hover:text-white">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
-                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
-                </svg>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-success rounded-full"></span>
-            </button>
-            
+
+            <!-- Farmer Portal Button - Accent Color -->
+            <a href="/agrisense/farmer/verify_code.php"
+                class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg">
+                <span>👨‍🌾</span>
+                <span>Farmer Portal</span>
+            </a>
+
             <!-- User Avatar -->
-            <div class="w-8 h-8 rounded-full bg-primary/30 flex items-center justify-center">
-                <span class="text-navbar-foreground text-sm">M</span>
+            <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/30">
+                <span class="text-navbar-foreground text-sm font-semibold">A</span>
             </div>
-            
-            <!-- Settings Icon -->
-            <button class="p-2 text-white/80 hover:text-white">
-                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
-                    <circle cx="12" cy="12" r="3"></circle>
-                </svg>
-            </button>
         </div>
     </nav>
-    
-    <!-- Secondary Navbar -->
-    <nav class="bg-subnav h-[50px] flex items-center px-6 shadow-sm">
-        <div class="flex items-center gap-8">
-            <!-- Dashboards (active) -->
-            <button class="flex items-center gap-2 text-sm text-primary font-medium">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+
+    <!-- Secondary Navbar - Clean White with Strong Contrast -->
+    <nav class="bg-subnav h-[50px] flex items-center px-6 shadow-sm border-b border-border">
+        <div class="flex items-center gap-6">
+            <!-- Dashboard (active) -->
+            <a href="/agrisense/" class="flex items-center gap-2 text-sm text-primary font-semibold border-b-2 border-primary pb-1 -mb-1">
+                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
                     <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                     <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                <span>Dashboards</span>
-            </button>
-            
-            <!-- UI Elements -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-                    <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-                    <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-                    <rect width="7" height="7" x="3" y="14" rx="1"></rect>
-                </svg>
-                <span>UI Elements</span>
-                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6"></path>
-                </svg>
-            </button>
-            
-            <!-- Components -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"></path>
-                    <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path>
-                    <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path>
-                </svg>
-                <span>Components</span>
-                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6"></path>
-                </svg>
-            </button>
-            
-            <!-- Charts -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                    <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                </svg>
-                <span>Charts</span>
-                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6"></path>
-                </svg>
-            </button>
-            
-            <!-- Pages -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path>
-                    <path d="M14 2v4a2 2 0 0 0 2 2h4"></path>
-                </svg>
-                <span>Pages</span>
-                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6"></path>
-                </svg>
-            </button>
-            
-            <!-- Email -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <rect width="20" height="16" x="2" y="4" rx="2"></rect>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
-                </svg>
-                <span>Email</span>
-            </button>
-            
-            <!-- Layouts -->
-            <button class="flex items-center gap-2 text-sm text-subnav-foreground hover:text-primary">
-                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <rect width="18" height="18" x="3" y="3" rx="2" ry="2"></rect>
-                    <line x1="3" x2="21" y1="9" y2="9"></line>
-                    <line x1="9" x2="9" y1="21" y2="9"></line>
-                </svg>
-                <span>Layouts</span>
-                <svg class="w-3 h-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path d="m6 9 6 6 6-6"></path>
-                </svg>
-            </button>
+                <span>Dashboard</span>
+            </a>
+
+            <!-- Smart Market -->
+            <a href="/agrisense/pages/smart_market.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>🎯</span>
+                <span>Smart Market</span>
+            </a>
+
+            <!-- Seasonal Price -->
+            <a href="/agrisense/pages/seasonal_price_memory.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>📅</span>
+                <span>Price Memory</span>
+            </a>
+
+            <!-- Over-Supply Alert -->
+            <a href="/agrisense/pages/oversupply_alert.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>⚠️</span>
+                <span>Over-Supply</span>
+            </a>
+
+            <!-- Climate Risk -->
+            <a href="/agrisense/pages/climate_risk_dashboard.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>🌦️</span>
+                <span>Climate Risk</span>
+            </a>
+
+            <!-- Price Gap -->
+            <a href="/agrisense/pages/market_price_gap.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>🔄</span>
+                <span>Price Gap</span>
+            </a>
+
+            <!-- Price Trend -->
+            <a href="/agrisense/pages/price_trend.php"
+                class="flex items-center gap-2 text-sm text-text-body hover:text-primary font-medium transition-colors">
+                <span>📈</span>
+                <span>Price Trend</span>
+            </a>
         </div>
     </nav>

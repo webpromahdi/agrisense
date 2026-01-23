@@ -97,35 +97,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
     <title>Over-Supply Alert - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* AgriSense - Professional Agriculture Theme */
         body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            background: #FAFAF9;
             min-height: 100vh;
         }
 
         .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+            background: #166534;
+            box-shadow: 0 2px 8px rgba(22, 101, 52, 0.15);
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+            background: #FFFFFF;
+            border: 1px solid #E7E5E4;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
             color: white;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 10px 20px rgba(22, 101, 52, 0.25);
+            background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
         }
 
         .risk-high {
@@ -134,64 +137,80 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
             border-left: 4px solid #dc2626;
         }
 
+        .risk-high {
+            background: #FEE2E2;
+            color: #B91C1C;
+            border-left: 4px solid #DC2626;
+        }
+
         .risk-elevated {
-            background: rgba(245, 158, 11, 0.15);
-            color: #d97706;
-            border-left: 4px solid #d97706;
+            background: #FEF3C7;
+            color: #92400E;
+            border-left: 4px solid #D97706;
         }
 
         .risk-normal {
-            background: rgba(34, 197, 94, 0.15);
-            color: #059669;
-            border-left: 4px solid #059669;
+            background: #DCFCE7;
+            color: #166534;
+            border-left: 4px solid #16A34A;
         }
 
         .badge-high {
-            background: rgba(239, 68, 68, 0.15);
-            color: #dc2626;
+            background: #FEE2E2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+            font-weight: 600;
         }
 
         .badge-elevated {
-            background: rgba(245, 158, 11, 0.15);
-            color: #d97706;
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FDE68A;
+            font-weight: 600;
         }
 
         .badge-normal {
-            background: rgba(34, 197, 94, 0.15);
-            color: #059669;
+            background: #DCFCE7;
+            color: #166534;
+            border: 1px solid #BBF7D0;
+            font-weight: 600;
         }
+
+        /* Text Colors */
+        .text-heading { color: #1C1917; }
+        .text-body { color: #44403C; }
+        .text-muted { color: #78716C; }
     </style>
 </head>
 
 <body class="min-h-screen">
-    <!-- Navigation -->
+    <!-- Navigation - Deep Forest Green -->
     <nav class="glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <a href="../index.php" class="flex items-center space-x-3">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center">
                             <span class="text-xl text-white">🌾</span>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
-                            <p class="text-xs text-emerald-600">Over-Supply Detection</p>
+                            <h1 class="text-xl font-bold text-white">AgriSense</h1>
+                            <p class="text-xs text-white/80 font-medium">Over-Supply Detection</p>
                         </div>
                     </a>
                 </div>
 
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:block text-right">
-                        <p class="text-sm font-medium text-gray-800">
+                        <p class="text-sm font-semibold text-white">
                             <?= htmlspecialchars($currentUser['name']) ?>
                         </p>
-                        <p class="text-xs text-emerald-600">
+                        <p class="text-xs text-white/70">
                             <?= htmlspecialchars($currentUser['email']) ?>
                         </p>
                     </div>
                     <a href="/agrisense/auth/logout.php"
-                        class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                        class="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors font-medium">
                         Logout
                     </a>
                 </div>
@@ -203,16 +222,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">⚠️ Crop Over-Supply Detection</h1>
-            <p class="text-gray-600">Identify crops with unusually high recent supply compared to historical average</p>
+            <h1 class="text-2xl font-bold text-heading mb-2">⚠️ Crop Over-Supply Detection</h1>
+            <p class="text-body">Identify crops with unusually high recent supply compared to historical average</p>
 
             <!-- Important Notice -->
-            <div class="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
+            <div class="mt-4 p-4 bg-white rounded-xl border border-border shadow-sm">
                 <div class="flex items-start gap-3">
                     <span class="text-2xl">📊</span>
                     <div>
-                        <h3 class="font-semibold text-gray-700 mb-1">Detection, Not Prediction</h3>
-                        <p class="text-sm text-gray-600">
+                        <h3 class="font-bold text-heading mb-1">Detection, Not Prediction</h3>
+                        <p class="text-sm text-body">
                             This feature <strong>detects current anomalies</strong> in supply data by comparing the
                             <strong>last 30 days</strong> with historical averages. It does NOT predict future supply.
                         </p>

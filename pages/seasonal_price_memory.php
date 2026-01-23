@@ -92,91 +92,104 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
     <title>Seasonal Price Memory - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        /* AgriSense - Professional Agriculture Theme */
         body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            background: #FAFAF9;
             min-height: 100vh;
         }
 
         .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
+            background: #166534;
+            box-shadow: 0 2px 8px rgba(22, 101, 52, 0.15);
         }
 
         .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
+            background: #FFFFFF;
+            border: 1px solid #E7E5E4;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: linear-gradient(135deg, #166534 0%, #14532d 100%);
             color: white;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            box-shadow: 0 10px 20px rgba(22, 101, 52, 0.25);
+            background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
         }
 
+        /* Text Colors */
+        .text-heading { color: #1C1917; }
+        .text-body { color: #44403C; }
+        .text-muted { color: #78716C; }
+
         .direction-up {
-            color: #059669;
+            color: #166534;
         }
 
         .direction-down {
-            color: #dc2626;
+            color: #B91C1C;
         }
 
         .direction-stable {
-            color: #6b7280;
+            color: #78716C;
         }
 
         .badge-up {
-            background: rgba(34, 197, 94, 0.15);
-            color: #059669;
+            background: #DCFCE7;
+            color: #166534;
+            border: 1px solid #BBF7D0;
+            font-weight: 600;
         }
 
         .badge-down {
-            background: rgba(239, 68, 68, 0.15);
-            color: #dc2626;
+            background: #FEE2E2;
+            color: #B91C1C;
+            border: 1px solid #FECACA;
+            font-weight: 600;
         }
 
         .badge-stable {
-            background: rgba(107, 114, 128, 0.15);
-            color: #6b7280;
+            background: #F5F5F4;
+            color: #44403C;
+            border: 1px solid #E7E5E4;
+            font-weight: 600;
         }
     </style>
 </head>
 
 <body class="min-h-screen">
-    <!-- Navigation -->
+    <!-- Navigation - Deep Forest Green -->
     <nav class="glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center">
                     <a href="../index.php" class="flex items-center space-x-3">
-                        <div
-                            class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
+                        <div class="w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center">
                             <span class="text-xl text-white">🌾</span>
                         </div>
                         <div>
-                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
-                            <p class="text-xs text-emerald-600">Seasonal Price Memory</p>
+                            <h1 class="text-xl font-bold text-white">AgriSense</h1>
+                            <p class="text-xs text-white/80 font-medium">Seasonal Price Memory</p>
                         </div>
                     </a>
                 </div>
 
                 <div class="flex items-center space-x-4">
                     <div class="hidden md:block text-right">
-                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($currentUser['name']) ?></p>
-                        <p class="text-xs text-emerald-600"><?= htmlspecialchars($currentUser['email']) ?></p>
+                        <p class="text-sm font-semibold text-white"><?= htmlspecialchars($currentUser['name']) ?></p>
+                        <p class="text-xs text-white/70"><?= htmlspecialchars($currentUser['email']) ?></p>
                     </div>
                     <a href="/agrisense/auth/logout.php"
-                        class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
+                        class="px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white hover:bg-white/20 transition-colors font-medium">
                         Logout
                     </a>
                 </div>
@@ -188,13 +201,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">📅 Seasonal Price Memory</h1>
-            <p class="text-gray-600">Compare current prices with the same period last year</p>
+            <h1 class="text-2xl font-bold text-heading mb-2">📅 Seasonal Price Memory</h1>
+            <p class="text-body">Compare current prices with the same period last year</p>
 
             <!-- Explanation -->
-            <div class="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <h3 class="font-semibold text-gray-700 mb-2">One-Season Reminder</h3>
-                <p class="text-sm text-gray-600 mb-2">
+            <div class="mt-4 p-4 bg-white rounded-xl border border-border shadow-sm">
+                <h3 class="font-bold text-heading mb-2">One-Season Reminder</h3>
+                <p class="text-sm text-body mb-2">
                     This feature shows how prices compare to the <strong>same month last year</strong>:
                 </p>
                 <div class="flex flex-wrap gap-3 text-sm">
@@ -215,11 +228,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
         <div class="glass-card rounded-xl p-6 mb-6">
             <form method="POST" class="flex flex-col sm:flex-row items-start sm:items-end gap-4">
                 <div class="flex-1">
-                    <label for="market_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="market_id" class="block text-sm font-semibold text-heading mb-2">
                         Filter by Market (Optional)
                     </label>
                     <select id="market_id" name="market_id"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
+                        class="w-full px-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-white text-body">
                         <option value="">-- All Markets --</option>
                         <?php foreach ($markets as $market): ?>
                             <option value="<?= $market['market_id'] ?>" <?= $selectedMarket == $market['market_id'] ? 'selected' : '' ?>>
