@@ -138,6 +138,29 @@
                 <span>👨‍🌾</span>
                 <span>Farmer Portal</span>
             </a>
+
+            <!-- User Profile Section -->
+            <?php if (isset($currentUser) && $currentUser): ?>
+                <div class="flex items-center gap-3 ml-2 pl-4 border-l border-white/20">
+                    <!-- User Avatar -->
+                    <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm border-2 border-white/30">
+                        <?= strtoupper(substr($currentUser['name'], 0, 1)) ?>
+                    </div>
+                    <!-- User Name -->
+                    <div class="text-white">
+                        <div class="text-sm font-semibold leading-tight"><?= htmlspecialchars($currentUser['name']) ?></div>
+                        <div class="text-xs text-white/70"><?= htmlspecialchars($currentUser['email']) ?></div>
+                    </div>
+                    <!-- Logout Button -->
+                    <a href="/agrisense/auth/logout.php"
+                        class="ml-2 flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white px-3 py-1.5 rounded-lg text-sm font-medium transition-all border border-white/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        <span>Logout</span>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     </nav>
 

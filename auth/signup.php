@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,62 +35,72 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             background: #FAFAF9;
             min-height: 100vh;
         }
-        
+
         .glass-card {
             background: #FFFFFF;
             border: 1px solid #E7E5E4;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
         }
-        
+
         .btn-primary {
             background: linear-gradient(135deg, #166534 0%, #14532d 100%);
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(22, 101, 52, 0.25);
             background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
         }
-        
+
         .input-field {
             background: #FFFFFF;
             border: 1px solid #D6D3D1;
             transition: all 0.3s ease;
         }
-        
+
         .input-field:focus {
             background: white;
             border-color: #166534;
             box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.1);
         }
-        
+
         .error-card {
             background: #FEE2E2;
             border: 1px solid #FECACA;
         }
-        
+
         .success-card {
             background: #DCFCE7;
             border: 1px solid #BBF7D0;
         }
-        
+
         .input-error {
             border-color: #f87171;
         }
 
         /* Text Colors */
-        .text-heading { color: #1C1917; }
-        .text-body { color: #44403C; }
-        .text-muted { color: #78716C; }
+        .text-heading {
+            color: #1C1917;
+        }
+
+        .text-body {
+            color: #44403C;
+        }
+
+        .text-muted {
+            color: #78716C;
+        }
     </style>
 </head>
+
 <body class="min-h-screen flex items-center justify-center px-4">
     <div class="w-full max-w-md">
         <div class="text-center mb-8">
             <div class="flex justify-center mb-4">
-                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center shadow-lg">
+                <div
+                    class="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-600 to-green-700 flex items-center justify-center shadow-lg">
                     <span class="text-3xl text-white">🌾</span>
                 </div>
             </div>
@@ -103,7 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if ($success): ?>
                 <div class="mb-6 p-4 success-card rounded-xl text-green-800">
                     <p class="font-bold">Registration successful!</p>
-                    <p class="text-sm mt-1">You can now <a href="login.php" class="underline font-bold text-green-700">login to your account</a>.</p>
+                    <p class="text-sm mt-1">You can now <a href="login.php" class="underline font-bold text-green-700">login
+                            to your account</a>.</p>
                 </div>
             <?php else: ?>
 
@@ -131,7 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label for="email" class="block text-sm font-semibold text-heading mb-2">
                                 Email Address
                             </label>
-                            <input type="email" id="email" name="email" value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                            <input type="email" id="email" name="email"
+                                value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
                                 class="w-full px-4 py-3 input-field rounded-lg focus:outline-none text-body <?= isset($errors['email']) ? 'input-error' : '' ?>"
                                 placeholder="example@email.com">
                             <?php if (isset($errors['email'])): ?>
@@ -147,14 +160,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 class="w-full px-4 py-3 input-field rounded-lg focus:outline-none text-body <?= isset($errors['password']) ? 'input-error' : '' ?>"
                                 placeholder="Create a strong password">
                             <?php if (isset($errors['password'])): ?>
-                                <p class="mt-2 text-sm text-red-600 font-medium"><?= htmlspecialchars($errors['password']) ?></p>
+                                <p class="mt-2 text-sm text-red-600 font-medium"><?= htmlspecialchars($errors['password']) ?>
+                                </p>
                             <?php else: ?>
-                                <p class="mt-2 text-xs text-muted">Min 6 characters with uppercase, lowercase, number, and special character</p>
+                                <p class="mt-2 text-xs text-muted">Min 6 characters with uppercase, lowercase, number, and
+                                    special character</p>
                             <?php endif; ?>
                         </div>
 
-                        <button type="submit"
-                            class="w-full btn-primary text-white py-3 px-4 rounded-lg">
+                        <button type="submit" class="w-full btn-primary text-white py-3 px-4 rounded-lg">
                             Create Account
                         </button>
                     </div>
@@ -170,10 +184,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <div class="mt-6 text-center">
-            <a href="/agrisense/index.php" class="text-green-700 hover:text-green-800 text-sm font-medium">
-                ← Back to Home
-            </a>
+            <p class="text-muted text-sm">Agricultural Market Intelligence System</p>
         </div>
     </div>
 </body>
+
 </html>
