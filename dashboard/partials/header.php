@@ -132,30 +132,12 @@
         </div>
 
         <div class="flex items-center gap-4">
-            <!-- Search Input -->
-            <div class="relative">
-                <input type="text" placeholder="Search..."
-                    class="bg-white/10 text-navbar-foreground placeholder-white/60 rounded-lg px-4 py-2 text-sm w-52 border border-white/15 focus:outline-none focus:ring-2 focus:ring-white/30 focus:bg-white/15" />
-                <!-- Search Icon (SVG) -->
-                <svg class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50"
-                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                    stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-            </div>
-
             <!-- Farmer Portal Button - Accent Color -->
             <a href="/agrisense/farmer/verify_code.php"
                 class="flex items-center gap-2 bg-accent hover:bg-accent-dark text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-md hover:shadow-lg">
                 <span>👨‍🌾</span>
                 <span>Farmer Portal</span>
             </a>
-
-            <!-- User Avatar -->
-            <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center border-2 border-white/30">
-                <span class="text-navbar-foreground text-sm font-semibold">A</span>
-            </div>
         </div>
     </nav>
 

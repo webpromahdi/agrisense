@@ -72,83 +72,44 @@ if ($pdo) {
     $error = "Database connection failed.";
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Top Farmer by Region - AgriSense</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            min-height: 100vh;
-        }
-        
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
-        }
-        
-        .gold-bg {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
-        }
-        
-        .silver-bg {
-            background: linear-gradient(135deg, rgba(156, 163, 175, 0.1) 0%, rgba(107, 114, 128, 0.1) 100%);
-        }
-        
-        .bronze-bg {
-            background: linear-gradient(135deg, rgba(180, 83, 9, 0.1) 0%, rgba(146, 64, 14, 0.1) 100%);
-        }
-    </style>
-</head>
-<body class="min-h-screen">
-    <!-- Navigation -->
-    <nav class="glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="../index.php" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
-                            <span class="text-xl text-white">🌾</span>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
-                            <p class="text-xs text-emerald-600">Top Farmer by Region</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <div class="hidden md:block text-right">
-                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($currentUser['name']) ?></p>
-                        <p class="text-xs text-emerald-600"><?= htmlspecialchars($currentUser['email']) ?></p>
-                    </div>
-                    <a href="/agrisense/auth/logout.php" 
-                       class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
-                        Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+
+<?php include __DIR__ . '/../dashboard/partials/header.php'; ?>
+
+<style>
+    .glass-card {
+        background: #FFFFFF;
+        border: 1px solid #E7E5E4;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .glass-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .gold-bg {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.1) 100%);
+    }
+    
+    .silver-bg {
+        background: linear-gradient(135deg, rgba(156, 163, 175, 0.1) 0%, rgba(107, 114, 128, 0.1) 100%);
+    }
+    
+    .bronze-bg {
+        background: linear-gradient(135deg, rgba(180, 83, 9, 0.1) 0%, rgba(146, 64, 14, 0.1) 100%);
+    }
+
+    /* Text Colors */
+    .text-heading { color: #1C1917; }
+    .text-body { color: #44403C; }
+    .text-muted { color: #78716C; }
+</style>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Top Performing Farmer by Region</h1>
-            <p class="text-gray-600">Highest revenue generating farmers in each region</p>
+            <h1 class="text-2xl font-bold text-heading mb-2">👨‍🌾 Top Performing Farmer by Region</h1>
+            <p class="text-body">Highest revenue generating farmers in each region</p>
         </div>
 
         <!-- Error Display -->
@@ -171,8 +132,8 @@ if ($pdo) {
             <!-- Summary Cards -->
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                 <div class="glass-card rounded-xl p-4">
-                    <p class="text-sm text-gray-500">Total Regions</p>
-                    <p class="text-2xl font-bold text-emerald-600"><?= $regionCount ?></p>
+                    <p class="text-sm text-muted">Total Regions</p>
+                    <p class="text-2xl font-bold text-primary"><?= $regionCount ?></p>
                     <p class="text-xs text-gray-500">with farmer data</p>
                 </div>
                 <div class="glass-card rounded-xl p-4">
@@ -276,5 +237,5 @@ if ($pdo) {
             </div>
         <?php endif; ?>
     </main>
-</body>
-</html>
+
+<?php include __DIR__ . '/../dashboard/partials/footer.php'; ?>

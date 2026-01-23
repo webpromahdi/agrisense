@@ -56,100 +56,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Price Anomaly - AgriSense</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-            min-height: 100vh;
-        }
-        
-        .glass-nav {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.1);
-        }
-        
-        .glass-card {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(34, 197, 94, 0.2);
-            box-shadow: 0 8px 32px rgba(34, 197, 94, 0.1);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            background: linear-gradient(135deg, #059669 0%, #047857 100%);
-        }
-        
-        .table-header {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
-        }
-    </style>
-</head>
-<body class="min-h-screen">
-    <!-- Navigation -->
-    <nav class="glass-nav">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <div class="flex items-center">
-                    <a href="../index.php" class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center shadow-lg">
-                            <span class="text-xl text-white">🌾</span>
-                        </div>
-                        <div>
-                            <h1 class="text-xl font-bold text-gray-800">AgriSense</h1>
-                            <p class="text-xs text-emerald-600">Price Anomaly Detection</p>
-                        </div>
-                    </a>
-                </div>
-                
-                <div class="flex items-center space-x-4">
-                    <div class="hidden md:block text-right">
-                        <p class="text-sm font-medium text-gray-800"><?= htmlspecialchars($currentUser['name']) ?></p>
-                        <p class="text-xs text-emerald-600"><?= htmlspecialchars($currentUser['email']) ?></p>
-                    </div>
-                    <a href="/agrisense/auth/logout.php" 
-                       class="px-4 py-2 glass-card rounded-lg text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition-colors">
-                        Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </nav>
+
+<?php include __DIR__ . '/../dashboard/partials/header.php'; ?>
+
+<style>
+    .glass-card {
+        background: #FFFFFF;
+        border: 1px solid #E7E5E4;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    
+    .glass-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #166534 0%, #14532d 100%);
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(22, 101, 52, 0.25);
+        background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
+    }
+    
+    .table-header {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+    }
+
+    /* Text Colors */
+    .text-heading { color: #1C1917; }
+    .text-body { color: #44403C; }
+    .text-muted { color: #78716C; }
+</style>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Header -->
         <div class="mb-8">
-            <h1 class="text-2xl font-bold text-gray-800 mb-2">Price Anomaly Detection</h1>
-            <p class="text-gray-600">Detect crops with prices deviating significantly from market averages</p>
+            <h1 class="text-2xl font-bold text-heading mb-2">📊 Price Anomaly Detection</h1>
+            <p class="text-body">Detect crops with prices deviating significantly from market averages</p>
         </div>
 
         <!-- Controls -->
         <div class="glass-card rounded-xl p-6 mb-6">
             <form method="POST" class="flex flex-col sm:flex-row items-start sm:items-end gap-4">
                 <div class="flex-1">
-                    <label for="threshold" class="block text-sm font-medium text-gray-700 mb-2">
+                    <label for="threshold" class="block text-sm font-medium text-heading mb-2">
                         Deviation Threshold (%)
                     </label>
                     <input type="number" id="threshold" name="threshold" value="<?= htmlspecialchars($threshold) ?>"
                         min="5" max="50" step="5"
-                        class="w-full sm:w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent">
-                    <p class="text-xs text-gray-500 mt-2">Prices deviating more than this percentage will be flagged</p>
+                        class="w-full sm:w-64 px-4 py-2 border border-border-strong rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                    <p class="text-xs text-muted mt-2">Prices deviating more than this percentage will be flagged</p>
                 </div>
                 <button type="submit"
                     class="px-6 py-2 btn-primary rounded-lg font-medium">
@@ -233,5 +195,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
             </div>
         <?php endif; ?>
     </main>
-</body>
-</html>
+
+<?php include __DIR__ . '/../dashboard/partials/footer.php'; ?>

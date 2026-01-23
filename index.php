@@ -312,7 +312,7 @@ if ($pdo) {
 </div>
 
 <!-- KPI Cards -->
-<div class="grid grid-cols-4 gap-6 -mt-10 relative z-10 px-6">
+<div class="grid grid-cols-4 gap-6 mt-6 relative z-10 px-6">
     <?php foreach ($kpiCards as $kpi): ?>
         <div class="bg-white rounded-2xl p-6 shadow-card-strong border border-border hover:shadow-lg transition-shadow">
             <div class="flex items-start justify-between">
