@@ -6,7 +6,7 @@
 --   1. Run this file first to create tables
 --   2. Run seed_data.sql to populate with sample data
 -- ============================================================
-
+DROP DATABASE agrisense;
 -- Create Database
 CREATE DATABASE IF NOT EXISTS agrisense;
 USE agrisense;
