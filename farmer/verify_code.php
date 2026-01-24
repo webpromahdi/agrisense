@@ -1,4 +1,3 @@
-<!-- verify_code.php -->
 <?php
 require_once __DIR__ . '/../controllers/FarmerUpdateController.php';
 
@@ -37,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Farmer Verification - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* AgriSense - Professional Agriculture Theme */
         body {
             background: #FAFAF9;
             min-height: 100vh;
@@ -78,7 +76,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 4px 12px rgba(22, 101, 52, 0.1);
         }
 
-        /* Text Colors */
         .text-heading { color: #1C1917; }
         .text-body { color: #44403C; }
         .text-muted { color: #78716C; }

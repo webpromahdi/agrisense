@@ -1,4 +1,3 @@
-<!-- update_crop.php -->
 <?php
 require_once __DIR__ . '/../controllers/FarmerUpdateController.php';
 
@@ -39,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Submit Crop Supply - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* AgriSense - Professional Agriculture Theme */
         body {
             background: #FAFAF9;
             min-height: 100vh;
@@ -85,7 +83,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #BBF7D0;
         }
 
-        /* Text Colors */
         .text-heading { color: #1C1917; }
         .text-body { color: #44403C; }
         .text-muted { color: #78716C; }

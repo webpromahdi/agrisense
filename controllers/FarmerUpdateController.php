@@ -1,9 +1,6 @@
 <?php
 /**
- * AgriSense - Farmer Update Controller
- * 
- * Handles farmer code verification and crop supply updates
- * Uses PDO prepared statements for security
+ * Farmer Update Controller
  */
 
 require_once __DIR__ . '/../db/connection.php';
@@ -19,20 +16,11 @@ class FarmerUpdateController
         $this->pdo = getConnection();
     }
 
-    /**
-     * Get validation errors
-     * @return array
-     */
     public function getErrors()
     {
         return $this->errors;
     }
 
-    /**
-     * Validate 6-digit code format
-     * @param string $code
-     * @return bool
-     */
     public function validateCodeFormat($code)
     {
         if (empty($code)) {
@@ -48,11 +36,6 @@ class FarmerUpdateController
         return true;
     }
 
-    /**
-     * Verify farmer code against database
-     * @param string $code
-     * @return array|false Farmer data if valid, false otherwise
-     */
     public function verifyCode($code)
     {
         $this->errors = [];
@@ -90,11 +73,6 @@ class FarmerUpdateController
         }
     }
 
-    /**
-     * Get farmer by ID (for session verification)
-     * @param int $farmerId
-     * @return array|false
-     */
     public function getFarmerById($farmerId)
     {
         if ($this->pdo === null) {
@@ -116,10 +94,6 @@ class FarmerUpdateController
         }
     }
 
-    /**
-     * Get all crops for dropdown
-     * @return array
-     */
     public function getCrops()
     {
         if ($this->pdo === null) {
@@ -137,10 +111,6 @@ class FarmerUpdateController
         }
     }
 
-    /**
-     * Get all markets for dropdown
-     * @return array
-     */
     public function getMarkets()
     {
         if ($this->pdo === null) {
@@ -161,20 +131,10 @@ class FarmerUpdateController
         }
     }
 
-    /**
-     * Submit crop supply record
-     * @param int $farmerId
-     * @param int $cropId
-     * @param int $marketId
-     * @param float $quantity
-     * @param float $pricePerUnit
-     * @return bool
-     */
     public function submitSupply($farmerId, $cropId, $marketId, $quantity, $pricePerUnit)
     {
         $this->errors = [];
 
-        // Validate inputs
         if (empty($cropId) || !is_numeric($cropId)) {
             $this->errors['crop'] = 'Please select a crop';
         }
@@ -222,10 +182,6 @@ class FarmerUpdateController
         }
     }
 
-    /**
-     * Start farmer session after verification
-     * @param array $farmer
-     */
     public static function startFarmerSession($farmer)
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -237,10 +193,6 @@ class FarmerUpdateController
         $_SESSION['farmer_verified'] = true;
     }
 
-    /**
-     * Check if farmer is verified
-     * @return bool
-     */
     public static function isFarmerVerified()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -250,10 +202,6 @@ class FarmerUpdateController
         return isset($_SESSION['farmer_verified']) && $_SESSION['farmer_verified'] === true;
     }
 
-    /**
-     * Get verified farmer ID from session
-     * @return int|null
-     */
     public static function getVerifiedFarmerId()
     {
         if (!self::isFarmerVerified()) {
@@ -263,10 +211,6 @@ class FarmerUpdateController
         return $_SESSION['farmer_id'] ?? null;
     }
 
-    /**
-     * Get verified farmer name from session
-     * @return string|null
-     */
     public static function getVerifiedFarmerName()
     {
         if (!self::isFarmerVerified()) {
@@ -276,9 +220,6 @@ class FarmerUpdateController
         return $_SESSION['farmer_name'] ?? null;
     }
 
-    /**
-     * Clear farmer verification session
-     */
     public static function clearFarmerSession()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -290,9 +231,6 @@ class FarmerUpdateController
         unset($_SESSION['farmer_verified']);
     }
 
-    /**
-     * Require farmer verification - redirect if not verified
-     */
     public static function requireVerification()
     {
         if (!self::isFarmerVerified()) {

@@ -98,7 +98,6 @@ if ($pdo) {
         background: linear-gradient(135deg, rgba(180, 83, 9, 0.1) 0%, rgba(146, 64, 14, 0.1) 100%);
     }
 
-    /* Text Colors */
     .text-heading { color: #1C1917; }
     .text-body { color: #44403C; }
     .text-muted { color: #78716C; }

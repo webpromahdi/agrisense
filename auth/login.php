@@ -29,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login - AgriSense</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* AgriSense - Professional Agriculture Theme */
         body {
             background: #FAFAF9;
             min-height: 100vh;
@@ -70,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #FECACA;
         }
 
-        /* Text Colors */
         .text-heading {
             color: #1C1917;
         }

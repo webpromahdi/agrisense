@@ -1,4 +1,3 @@
-<!-- Footer - Clean & Professional -->
 <footer class="py-8 text-center text-text-muted text-sm border-t border-border mt-4 bg-white">
     <p class="flex items-center justify-center gap-1.5 font-medium">
         2026 © AgriSense - Crafted with

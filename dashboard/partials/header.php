@@ -20,32 +20,23 @@
                         sans: ['Poppins', 'sans-serif'],
                     },
                     colors: {
-                        /* ========================================
-                           AgriSense - Professional Agriculture Palette
-                           Strong, Confident, Natural Colors
-                           ======================================== */
-
-                        /* Primary - Deep Forest/Emerald Green */
                         primary: '#166534',
                         'primary-light': '#15803d',
                         'primary-dark': '#14532d',
                         'primary-deeper': '#052e16',
                         'primary-foreground': '#FFFFFF',
 
-                        /* Secondary - Warm Neutral Tones */
                         secondary: '#FAFAF9',
                         'secondary-dark': '#F5F5F4',
                         'secondary-darker': '#E7E5E4',
                         'secondary-foreground': '#166534',
 
-                        /* Accent - Harvest Amber/Golden */
                         accent: '#D97706',
                         'accent-light': '#F59E0B',
                         'accent-dark': '#B45309',
                         'accent-deeper': '#92400E',
                         'accent-foreground': '#FFFFFF',
 
-                        /* Backgrounds - Clean & Neutral */
                         background: '#FFFFFF',
                         'background-alt': '#FAFAF9',
                         'background-subtle': '#F5F5F4',
@@ -53,20 +44,17 @@
                         card: '#FFFFFF',
                         'card-foreground': '#1C1917',
 
-                        /* Text - Strong Hierarchy with High Contrast */
                         'text-heading': '#1C1917',
                         'text-subheading': '#166534',
                         'text-body': '#44403C',
                         'text-muted': '#78716C',
                         'text-subtle': '#A8A29E',
 
-                        /* UI Elements */
                         muted: '#F5F5F4',
                         'muted-foreground': '#78716C',
                         border: '#E7E5E4',
                         'border-strong': '#D6D3D1',
 
-                        /* Navbar - Deep Forest Green */
                         navbar: '#166534',
                         'navbar-dark': '#14532d',
                         'navbar-foreground': '#FFFFFF',
@@ -74,7 +62,6 @@
                         'subnav-foreground': '#44403C',
                         'subnav-active': '#166534',
 
-                        /* Status Colors - Vibrant & Clear */
                         success: '#16A34A',
                         'success-dark': '#15803D',
                         'success-light': '#DCFCE7',
@@ -95,7 +82,6 @@
                         'info-light': '#DBEAFE',
                         'info-foreground': '#FFFFFF',
 
-                        /* Earth Tones for Agriculture */
                         earth: '#78350F',
                         'earth-light': '#A16207',
                         'earth-lighter': '#FEF3C7',

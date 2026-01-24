@@ -10,10 +10,6 @@ require_once __DIR__ . '/db/connection.php';
 AuthController::requireAuth();
 $currentUser = AuthController::getCurrentUser();
 
-// ============================================
-// FETCH DATABASE STATS
-// ============================================
-
 $stats = [
     'crops' => 0,
     'markets' => 0,
@@ -33,9 +29,6 @@ if ($pdo) {
     }
 }
 
-// ============================================
-// KPI CARDS DATA
-// ============================================
 $kpiCards = [
     [
         'label' => 'CROPS TRACKED',
@@ -67,9 +60,6 @@ $kpiCards = [
     ],
 ];
 
-// ============================================
-// FETCH TOP CROPS BY REGION
-// ============================================
 $topCrops = [];
 if ($pdo) {
     try {
@@ -97,9 +87,6 @@ if ($pdo) {
     }
 }
 
-// ============================================
-// FETCH TOP FARMERS BY REGION
-// ============================================
 $topFarmers = [];
 if ($pdo) {
     try {
@@ -127,10 +114,6 @@ if ($pdo) {
 <?php include 'dashboard/partials/header.php'; ?>
 
 <style>
-    /* ========================================
-       AgriSense Dashboard - Professional Agriculture Theme
-       ======================================== */
-
     .section-card {
         background: #FFFFFF;
         border-radius: 16px;

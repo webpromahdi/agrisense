@@ -1,9 +1,6 @@
 <?php
 /**
- * AgriSense - Authentication Controller
- * 
- * Handles user registration, login, logout, and session management
- * Uses PDO prepared statements for security
+ * Authentication Controller
  */
 
 require_once __DIR__ . '/../db/connection.php';
@@ -19,20 +16,11 @@ class AuthController
         $this->pdo = getConnection();
     }
 
-    /**
-     * Get validation errors
-     * @return array
-     */
     public function getErrors()
     {
         return $this->errors;
     }
 
-    /**
-     * Validate email format
-     * @param string $email
-     * @return bool
-     */
     public function validateEmail($email)
     {
         if (empty($email)) {
@@ -49,10 +37,7 @@ class AuthController
     }
 
     /**
-     * Validate password strength
-     * Requirements: 6+ chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-     * @param string $password
-     * @return bool
+     * Validate password: 6+ chars, uppercase, lowercase, number, special char
      */
     public function validatePassword($password)
     {
@@ -89,11 +74,6 @@ class AuthController
         return true;
     }
 
-    /**
-     * Validate name
-     * @param string $name
-     * @return bool
-     */
     public function validateName($name)
     {
         if (empty($name)) {
@@ -109,11 +89,6 @@ class AuthController
         return true;
     }
 
-    /**
-     * Check if email already exists
-     * @param string $email
-     * @return bool
-     */
     public function emailExists($email)
     {
         if ($this->pdo === null) {
@@ -130,13 +105,6 @@ class AuthController
         }
     }
 
-    /**
-     * Register a new user
-     * @param string $name
-     * @param string $email
-     * @param string $password
-     * @return bool
-     */
     public function register($name, $email, $password)
     {
         $this->errors = [];
@@ -180,12 +148,6 @@ class AuthController
         }
     }
 
-    /**
-     * Authenticate user and start session
-     * @param string $email
-     * @param string $password
-     * @return bool
-     */
     public function login($email, $password)
     {
         $this->errors = [];
@@ -212,18 +174,15 @@ class AuthController
                 return false;
             }
 
-            // Verify password
             if (!password_verify($password, $user['password'])) {
                 $this->errors['general'] = 'Invalid email or password';
                 return false;
             }
 
-            // Start session
             if (session_status() === PHP_SESSION_NONE) {
                 session_start();
             }
 
-            // Store user data in session
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['user_email'] = $user['email'];
             $_SESSION['user_name'] = $user['name'];
@@ -238,10 +197,6 @@ class AuthController
         }
     }
 
-    /**
-     * Check if user is logged in
-     * @return bool
-     */
     public static function isLoggedIn()
     {
         if (session_status() === PHP_SESSION_NONE) {
@@ -251,10 +206,6 @@ class AuthController
         return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
     }
 
-    /**
-     * Get current logged-in user data
-     * @return array|null
-     */
     public static function getCurrentUser()
     {
         if (!self::isLoggedIn()) {
@@ -268,19 +219,14 @@ class AuthController
         ];
     }
 
-    /**
-     * Logout user and destroy session
-     */
     public static function logout()
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
         }
 
-        // Unset all session variables
         $_SESSION = [];
 
-        // Destroy the session cookie
         if (ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(
@@ -294,13 +240,9 @@ class AuthController
             );
         }
 
-        // Destroy the session
         session_destroy();
     }
 
-    /**
-     * Require authentication - redirect to login if not logged in
-     */
     public static function requireAuth()
     {
         if (!self::isLoggedIn()) {

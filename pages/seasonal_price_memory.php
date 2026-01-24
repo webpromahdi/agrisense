@@ -110,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
         background: linear-gradient(135deg, #14532d 0%, #052e16 100%);
     }
 
-    /* Text Colors */
     .text-heading { color: #1C1917; }
     .text-body { color: #44403C; }
     .text-muted { color: #78716C; }

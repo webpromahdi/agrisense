@@ -87,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' || isset($_GET['analyze'])) {
         background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
     }
 
-    /* Text Colors */
     .text-heading { color: #1C1917; }
     .text-body { color: #44403C; }
     .text-muted { color: #78716C; }
