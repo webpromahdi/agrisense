@@ -110,8 +110,9 @@ try {
                                 class="<?php echo $index % 2 === 0 ? 'bg-white' : 'bg-gray-50'; ?> hover:bg-gray-100 transition-colors">
                                 <!-- Deal ID -->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    #
-                                    <?php echo htmlspecialchars($deal['deal_id']); ?>
+                                    <a href="deal_detail.php?id=<?php echo htmlspecialchars($deal['deal_id']); ?>" class="text-primary hover:text-primary-dark underline decoration-dotted underline-offset-2">
+                                        #<?php echo htmlspecialchars($deal['deal_id']); ?>
+                                    </a>
                                 </td>
 
                                 <!-- Crop -->
