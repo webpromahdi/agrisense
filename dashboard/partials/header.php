@@ -120,6 +120,7 @@
         'climate_risk_dashboard.php' => 'climate_risk',
         'market_price_gap.php' => 'price_gap',
         'price_trend.php' => 'price_trend',
+        'virtual_coop.php' => 'virtual_coop',
     ];
 
     $activeNav = isset($navPages[$currentPage]) ? $navPages[$currentPage] : '';
@@ -185,8 +186,7 @@
     <nav class="bg-subnav h-[50px] flex items-center px-6 shadow-sm border-b border-border">
         <div class="flex items-center gap-6">
             <!-- Dashboard -->
-            <a href="/agrisense/index.php"
-                class="<?= getNavLinkClass('dashboard', $activeNav) ?>">
+            <a href="/agrisense/index.php" class="<?= getNavLinkClass('dashboard', $activeNav) ?>">
                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor" stroke-width="2">
                     <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -196,8 +196,7 @@
             </a>
 
             <!-- Smart Market -->
-            <a href="/agrisense/pages/smart_market.php"
-                class="<?= getNavLinkClass('smart_market', $activeNav) ?>">
+            <a href="/agrisense/pages/smart_market.php" class="<?= getNavLinkClass('smart_market', $activeNav) ?>">
                 <span>🎯</span>
                 <span>Smart Market</span>
             </a>
@@ -210,8 +209,7 @@
             </a>
 
             <!-- Over-Supply Alert -->
-            <a href="/agrisense/pages/oversupply_alert.php"
-                class="<?= getNavLinkClass('oversupply', $activeNav) ?>">
+            <a href="/agrisense/pages/oversupply_alert.php" class="<?= getNavLinkClass('oversupply', $activeNav) ?>">
                 <span>⚠️</span>
                 <span>Over-Supply</span>
             </a>
@@ -224,17 +222,21 @@
             </a>
 
             <!-- Price Gap -->
-            <a href="/agrisense/pages/market_price_gap.php"
-                class="<?= getNavLinkClass('price_gap', $activeNav) ?>">
+            <a href="/agrisense/pages/market_price_gap.php" class="<?= getNavLinkClass('price_gap', $activeNav) ?>">
                 <span>🔄</span>
                 <span>Price Gap</span>
             </a>
 
             <!-- Price Trend -->
-            <a href="/agrisense/pages/price_trend.php"
-                class="<?= getNavLinkClass('price_trend', $activeNav) ?>">
+            <a href="/agrisense/pages/price_trend.php" class="<?= getNavLinkClass('price_trend', $activeNav) ?>">
                 <span>📈</span>
                 <span>Price Trend</span>
+            </a>
+
+            <!-- Virtual Cooperative -->
+            <a href="/agrisense/pages/virtual_coop.php" class="<?= getNavLinkClass('virtual_coop', $activeNav) ?>">
+                <span>🤝</span>
+                <span>Virtual Cooperative</span>
             </a>
         </div>
     </nav>
