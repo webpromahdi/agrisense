@@ -121,6 +121,7 @@
         'market_price_gap.php' => 'price_gap',
         'price_trend.php' => 'price_trend',
         'virtual_coop.php' => 'virtual_coop',
+        'aggregation_history.php' => 'aggregation_history',
     ];
 
     $activeNav = isset($navPages[$currentPage]) ? $navPages[$currentPage] : '';
@@ -237,6 +238,13 @@
             <a href="/agrisense/pages/virtual_coop.php" class="<?= getNavLinkClass('virtual_coop', $activeNav) ?>">
                 <span>🤝</span>
                 <span>Virtual Cooperative</span>
+            </a>
+
+            <!-- Aggregation History -->
+            <a href="/agrisense/pages/aggregation_history.php"
+                class="<?= getNavLinkClass('aggregation_history', $activeNav) ?>">
+                <span>📜</span>
+                <span>History</span>
             </a>
         </div>
     </nav>
