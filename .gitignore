@@ -47,3 +47,8 @@ uploads/
 *.sql.bak
 *.sql.gz
 db/*.dump
+
+#other docs
+calculation.md
+FEATURES.md
+
