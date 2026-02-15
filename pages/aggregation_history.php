@@ -88,6 +88,10 @@ try {
                             Aggregated
                         </th>
                         <th scope="col"
+                            class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Farmers
+                        </th>
+                        <th scope="col"
                             class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                             Logistics
                         </th>
@@ -135,6 +139,11 @@ try {
                                     <?php echo number_format($deal['aggregated_quantity'], 2); ?>
                                 </td>
 
+                                <!-- Farmers (ADDED) -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-center font-semibold text-gray-700">
+                                    <?php echo $deal['total_farmers']; ?> 👨🌾
+                                </td>
+
                                 <!-- Logistics -->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-mono text-orange-600">
                                     ৳<?php echo number_format($deal['logistics_cost'], 2); ?>
@@ -174,7 +183,7 @@ try {
                         <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
-                            <td colspan="8" class="px-6 py-10 whitespace-nowrap text-sm text-gray-500 text-center italic">
+                            <td colspan="9" class="px-6 py-10 whitespace-nowrap text-sm text-gray-500 text-center italic">
                                 <div class="flex flex-col items-center justify-center gap-2">
                                     <span class="text-2xl">📭</span>
                                     <span>No aggregation history found.</span>

@@ -115,22 +115,35 @@ if ($pdo) {
 // Fetch Cooperative Intelligence Stats
 $coopStats = [
     'fulfilled' => 0,
+    'total_deals' => 0,
     'rate' => 0,
-    'volume' => 0,
-    'carbon' => 0,
-    'logistics' => 0
+    'farmers' => 0,
+    'reserved' => 0,
+    'carbon_total' => 0,
+    'avg_carbon' => 0,
+    'efficiency_score' => 0
 ];
 $recentDeals = [];
 
 if ($pdo) {
     try {
-        $coopStats['fulfilled'] = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals WHERE status='fulfilled'")->fetchColumn();
-        $totalDeals = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals")->fetchColumn();
-        $coopStats['rate'] = ($totalDeals > 0) ? ($coopStats['fulfilled'] / $totalDeals) * 100 : 0;
+        $coopStats['fulfilled'] = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals WHERE status='fulfilled' OR status='sold'")->fetchColumn();
+        $coopStats['total_deals'] = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['rate'] = ($coopStats['total_deals'] > 0) ? ($coopStats['fulfilled'] / $coopStats['total_deals']) * 100 : 0;
 
-        $coopStats['volume'] = $pdo->query("SELECT SUM(aggregated_quantity) FROM virtual_coop_deals")->fetchColumn();
-        $coopStats['carbon'] = $pdo->query("SELECT SUM(carbon_saved) FROM virtual_coop_deals")->fetchColumn();
-        $coopStats['logistics'] = $pdo->query("SELECT SUM(logistics_cost) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['reserved'] = $pdo->query("SELECT COALESCE(SUM(quantity),0) FROM market_supply WHERE status = 'reserved'")->fetchColumn();
+        $coopStats['farmers'] = $pdo->query("SELECT COUNT(DISTINCT farmer_id) FROM deal_participants")->fetchColumn();
+        $coopStats['carbon_total'] = $pdo->query("SELECT COALESCE(SUM(carbon_saved),0) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['avg_carbon'] = $pdo->query("SELECT COALESCE(AVG(carbon_saved),0) FROM virtual_coop_deals")->fetchColumn();
+
+        // Calculate Efficiency Score
+        // (FulfillmentRate * 0.5) + ((CarbonSaved/100) * 0.3) + ((ParticipatingFarmers/50) * 0.2)
+        // Cap at 100
+        $score = ($coopStats['rate'] * 0.5)
+            + (min(($coopStats['carbon_total'] / 100), 100) * 0.3)
+            + (min(($coopStats['farmers'] / 50), 100) * 0.2);
+
+        $coopStats['efficiency_score'] = min(round($score), 100);
 
         // Recent Deals for Widget
         $sql = "SELECT v.*, c.crop_name, m.market_name 
@@ -148,6 +161,46 @@ if ($pdo) {
 ?>
 
 <?php include 'dashboard/partials/header.php'; ?>
+
+<!-- Executive Insight Box (New Top Section) -->
+<div class="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-white p-6 shadow-lg mb-6 sticky top-0 z-20">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🚀</span>
+                <h2 class="text-xl font-bold tracking-tight">System Intelligence Snapshot</h2>
+            </div>
+            <p class="text-gray-400 text-sm mt-1">Real-time aggregation engine performance metrics</p>
+        </div>
+
+        <div class="flex items-center gap-8">
+            <div class="text-center">
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Fulfillment Rate</p>
+                <div class="text-2xl font-bold text-green-400"><?= number_format($coopStats['rate'], 1) ?>%</div>
+            </div>
+            <div class="w-px h-8 bg-gray-700"></div>
+            <div class="text-center">
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Total CO₂ Saved</p>
+                <div class="text-2xl font-bold text-blue-400"><?= number_format($coopStats['carbon_total']) ?> <span
+                        class="text-sm">kg</span></div>
+            </div>
+            <div class="w-px h-8 bg-gray-700"></div>
+            <div class="text-center">
+                <p class="text-xs text-gray-400 uppercase font-bold tracking-wider mb-1">Farmers</p>
+                <div class="text-2xl font-bold text-purple-400"><?= number_format($coopStats['farmers']) ?></div>
+            </div>
+
+            <div class="bg-gray-800 px-5 py-3 rounded-lg border border-gray-700 ml-4">
+                <p class="text-[10px] text-gray-400 uppercase font-bold tracking-wider mb-1">System Efficiency</p>
+                <div class="flex items-center gap-2">
+                    <span class="text-yellow-400 text-lg">⭐</span>
+                    <span class="text-2xl font-bold text-white"><?= $coopStats['efficiency_score'] ?></span>
+                    <span class="text-gray-500 text-xs">/100</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <style>
     .section-card {
@@ -488,40 +541,71 @@ if ($pdo) {
 
 <!-- Cooperative Intelligence Section -->
 <div class="mt-8 mb-8">
-    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
-        <span>🧠</span> Cooperative Intelligence Overview
-    </h3>
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+            <span>🧠</span> Cooperative Intelligence Overview
+        </h3>
+
+        <!-- System Status Box (Formal) -->
+        <div class="flex flex-wrap items-center gap-2">
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-700 text-xs font-semibold border border-green-200 rounded-full">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                </span>
+                Aggregation Engine Active
+            </span>
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
+                ✔ FIFO Reservation
+            </span>
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
+                ✔ Fair Cost Alloc.
+            </span>
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-gray-50 text-gray-700 text-xs font-medium border border-gray-200 rounded-full">
+                ✔ Sustainability Mod.
+            </span>
+            <span
+                class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium border border-blue-200 rounded-full">
+                🛡️ Tx Safety
+            </span>
+        </div>
+    </div>
 
     <!-- Intelligence KPIs -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <!-- Fulfillment Rate -->
+        <!-- Total Deals -->
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Fulfillment Rate</p>
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Deals</p>
             <div class="flex items-end gap-2 mt-2">
-                <p class="text-3xl font-bold text-gray-800"><?= number_format($coopStats['rate'], 1) ?>%</p>
-                <span class="text-sm text-gray-500 mb-1">of deals</span>
+                <p class="text-3xl font-bold text-gray-800"><?= number_format($coopStats['total_deals']) ?></p>
+                <span class="text-sm text-gray-500 mb-1">Managed</span>
             </div>
         </div>
 
-        <!-- Volume Aggregated -->
+        <!-- Currently Reserved -->
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Volume Aggregated</p>
-            <p class="text-3xl font-bold text-blue-600 mt-2"><?= number_format($coopStats['volume']) ?></p>
-            <p class="text-xs text-gray-500 mt-1">Total UNITS processed</p>
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Currently Reserved</p>
+            <p class="text-3xl font-bold text-blue-600 mt-2"><?= number_format($coopStats['reserved']) ?></p>
+            <p class="text-xs text-gray-500 mt-1">Units in active pipelines</p>
         </div>
 
-        <!-- Carbon Saved -->
+        <!-- Participating Farmers -->
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Est. CO₂ Reduction</p>
-            <p class="text-3xl font-bold text-green-600 mt-2"><?= number_format($coopStats['carbon'], 2) ?></p>
-            <p class="text-xs text-gray-500 mt-1">Kilograms saved</p>
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Participating Farmers</p>
+            <p class="text-3xl font-bold text-green-600 mt-2"><?= number_format($coopStats['farmers']) ?></p>
+            <p class="text-xs text-gray-500 mt-1">Benefited members</p>
         </div>
 
-        <!-- Logistics Managed -->
+        <!-- Avg Carbon Saved -->
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
-            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Logistics Managed</p>
-            <p class="text-3xl font-bold text-orange-600 mt-2">৳<?= number_format($coopStats['logistics']) ?></p>
-            <p class="text-xs text-gray-500 mt-1">Total operational volume</p>
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Avg CO₂ Saved</p>
+            <p class="text-3xl font-bold text-orange-600 mt-2"><?= number_format($coopStats['avg_carbon'], 2) ?></p>
+            <p class="text-xs text-gray-500 mt-1">kg per deal</p>
         </div>
     </div>
 
