@@ -23,6 +23,8 @@ try {
             v.target_quantity,
             v.aggregated_quantity,
             v.status,
+            v.logistics_cost,
+            v.carbon_saved,
             v.created_at,
             c.crop_name,
             m.market_name,
@@ -83,15 +85,15 @@ try {
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Target
-                        </th>
-                        <th scope="col"
-                            class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                             Aggregated
                         </th>
                         <th scope="col"
-                            class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
-                            Farmers
+                            class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            Logistics
+                        </th>
+                        <th scope="col"
+                            class="px-6 py-3 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                            CO₂ Saved
                         </th>
                         <th scope="col"
                             class="px-6 py-3 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -110,7 +112,8 @@ try {
                                 class="<?php echo $index % 2 === 0 ? 'bg-white' : 'bg-gray-50'; ?> hover:bg-gray-100 transition-colors">
                                 <!-- Deal ID -->
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                    <a href="deal_detail.php?id=<?php echo htmlspecialchars($deal['deal_id']); ?>" class="text-primary hover:text-primary-dark underline decoration-dotted underline-offset-2">
+                                    <a href="deal_detail.php?id=<?php echo htmlspecialchars($deal['deal_id']); ?>"
+                                        class="text-primary hover:text-primary-dark underline decoration-dotted underline-offset-2">
                                         #<?php echo htmlspecialchars($deal['deal_id']); ?>
                                     </a>
                                 </td>
@@ -125,11 +128,6 @@ try {
                                     <?php echo htmlspecialchars($deal['market_name']); ?>
                                 </td>
 
-                                <!-- Target Quantity -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right font-mono">
-                                    <?php echo number_format($deal['target_quantity'], 2); ?>
-                                </td>
-
                                 <!-- Aggregated Quantity -->
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-sm text-right font-bold font-mono
@@ -137,9 +135,15 @@ try {
                                     <?php echo number_format($deal['aggregated_quantity'], 2); ?>
                                 </td>
 
-                                <!-- Total Farmers -->
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-center">
-                                    <?php echo htmlspecialchars($deal['total_farmers']); ?> 👨‍🌾
+                                <!-- Logistics -->
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-mono text-orange-600">
+                                    ৳<?php echo number_format($deal['logistics_cost'], 2); ?>
+                                </td>
+
+                                <!-- Carbon Saved -->
+                                <td
+                                    class="px-6 py-4 whitespace-nowrap text-sm text-right font-mono text-green-700 font-semibold">
+                                    <?php echo number_format($deal['carbon_saved'], 2); ?> kg
                                 </td>
 
                                 <!-- Status Badge -->

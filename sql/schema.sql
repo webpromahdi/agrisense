@@ -160,6 +160,8 @@ CREATE TABLE IF NOT EXISTS virtual_coop_deals (
     target_quantity DECIMAL(12,2) NOT NULL,
     aggregated_quantity DECIMAL(12,2) NOT NULL DEFAULT 0,
     status ENUM('pending','fulfilled','partial','cancelled') DEFAULT 'pending',
+    logistics_cost DECIMAL(12,2) DEFAULT 0,
+    carbon_saved DECIMAL(12,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (crop_id) REFERENCES crops(crop_id),
     FOREIGN KEY (market_id) REFERENCES markets(market_id),
@@ -184,6 +186,18 @@ CREATE TABLE IF NOT EXISTS deal_participants (
 CREATE INDEX idx_market_supply_aggregation ON market_supply(crop_id, supply_date, status);
 CREATE INDEX idx_deals_region_status ON virtual_coop_deals(region_id, status);
 
+-- 5. System Constants
+CREATE TABLE IF NOT EXISTS system_constants (
+    constant_key VARCHAR(100) PRIMARY KEY,
+    constant_value DECIMAL(12,4)
+);
+
+INSERT IGNORE INTO system_constants (constant_key, constant_value) VALUES 
+('diesel_emission_factor', 2.64),
+('logistics_rate_per_unit', 2.50),
+('individual_trip_km', 10.00),
+('aggregated_trip_km', 15.00);
+
 -- ============================================================
 -- DACE-Lite Advanced Aggregation Module (PHASE 2 - Procedure)
 -- ============================================================
@@ -192,27 +206,75 @@ DELIMITER //
 
 DROP PROCEDURE IF EXISTS sp_auto_aggregate_order //
 
+CREATE PROCEDURE sp_allocate_costs(IN p_deal_id INT)
+BEGIN
+    DECLARE v_total_qty DECIMAL(10,2);
+    DECLARE v_total_farmers INT;
+    DECLARE v_logistics_cost DECIMAL(12,2);
+    DECLARE v_rate DECIMAL(10,2);
+
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL;
+    END;
+
+    START TRANSACTION;
+
+    SELECT aggregated_quantity INTO v_total_qty
+    FROM virtual_coop_deals WHERE deal_id = p_deal_id;
+
+    SELECT COUNT(*) INTO v_total_farmers
+    FROM deal_participants WHERE deal_id = p_deal_id;
+
+    SELECT COALESCE(MAX(constant_value), 2.50) INTO v_rate 
+    FROM system_constants WHERE constant_key = 'logistics_rate_per_unit';
+
+    IF v_total_qty > 0 THEN
+        SET v_logistics_cost = v_total_qty * v_rate;
+    ELSE
+        SET v_logistics_cost = 0;
+    END IF;
+
+    UPDATE virtual_coop_deals 
+    SET logistics_cost = v_logistics_cost 
+    WHERE deal_id = p_deal_id;
+
+    IF v_total_farmers > 0 AND v_total_qty > 0 THEN
+        UPDATE deal_participants
+        SET cost_share = (
+            (0.5 * (quantity_allocated / v_total_qty) * v_logistics_cost) + 
+            (0.5 * (1 / v_total_farmers) * v_logistics_cost)
+        )
+        WHERE deal_id = p_deal_id;
+    END IF;
+
+    COMMIT;
+END //
+
 CREATE PROCEDURE sp_auto_aggregate_order(
     IN p_crop_id INT,
     IN p_market_id INT,
     IN p_target_quantity DECIMAL(12,2)
 )
 BEGIN
-    -- =============================================
-    -- Variable Declarations
-    -- =============================================
     DECLARE v_region_id INT;
     DECLARE v_deal_id INT;
-    DECLARE v_running_total DECIMAL(12,2) DEFAULT 0;
+    DECLARE v_aggregated_qty DECIMAL(12,2) DEFAULT 0;
     DECLARE v_supply_id INT;
     DECLARE v_farmer_id INT;
     DECLARE v_supply_quantity DECIMAL(12,2);
+    
+    -- Carbon Variables
+    DECLARE v_total_farmers INT DEFAULT 0;
+    DECLARE v_individual_dist_per_farmer DECIMAL(10,2);
+    DECLARE v_aggregated_dist DECIMAL(10,2);
+    DECLARE v_emission_factor DECIMAL(10,2);
+    DECLARE v_total_individual_dist DECIMAL(10,2);
+    DECLARE v_carbon_saved DECIMAL(12,2);
+
     DECLARE done INT DEFAULT 0;
 
-    -- =============================================
-    -- Cursor Declaration
-    -- =============================================
-    -- Cursor for fetching available supply (oldest first - FIFO)
     DECLARE cur_supply CURSOR FOR
         SELECT supply_id, farmer_id, quantity
         FROM market_supply
@@ -221,69 +283,33 @@ BEGIN
           AND status = 'available'
         ORDER BY supply_date ASC;
 
-    -- =============================================
-    -- Handler Declarations
-    -- =============================================
-    -- Continue handler for cursor NOT FOUND
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
 
-    -- EXIT Handler for SQLEXCEPTION
-    -- Rolls back transaction and raises a standardized error
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
     BEGIN
         ROLLBACK;
-        SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'Aggregation failed. Transaction rolled back.';
+        RESIGNAL;
     END;
 
-    -- =============================================
-    -- 1. Validation
-    -- =============================================
-    IF p_target_quantity <= 0 THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Target quantity must be greater than 0';
-    END IF;
-
-    -- Start Transaction Scope
     START TRANSACTION;
 
-    -- =============================================
-    -- 2. Get Region ID & Validate Market
-    -- =============================================
     SELECT region_id INTO v_region_id
     FROM markets
     WHERE market_id = p_market_id
     LIMIT 1;
 
     IF v_region_id IS NULL THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Market not found';
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Market not found';
     END IF;
 
-    -- =============================================
-    -- 3. Create Initial Virtual Deal
-    -- =============================================
     INSERT INTO virtual_coop_deals (
-        crop_id, 
-        market_id, 
-        region_id, 
-        target_quantity, 
-        aggregated_quantity, 
-        status
+        crop_id, market_id, region_id, target_quantity, aggregated_quantity, status
     ) VALUES (
-        p_crop_id, 
-        p_market_id, 
-        v_region_id, 
-        p_target_quantity, 
-        0, 
-        'pending'
+        p_crop_id, p_market_id, v_region_id, p_target_quantity, 0, 'pending'
     );
     
     SET v_deal_id = LAST_INSERT_ID();
 
-    -- =============================================
-    -- 4-7. Aggregation Loop
-    -- =============================================
     OPEN cur_supply;
 
     read_loop: LOOP
@@ -293,49 +319,62 @@ BEGIN
             LEAVE read_loop;
         END IF;
 
-        -- Check if target is met (Whole-batch allocation logic)
-        IF v_running_total >= p_target_quantity THEN
+        IF v_aggregated_qty >= p_target_quantity THEN
             LEAVE read_loop;
         END IF;
 
-        -- Process Supply
         INSERT INTO deal_participants (
-            deal_id, 
-            farmer_id, 
-            supply_id, 
-            quantity_allocated
+            deal_id, farmer_id, supply_id, quantity_allocated
         ) VALUES (
-            v_deal_id, 
-            v_farmer_id, 
-            v_supply_id, 
-            v_supply_quantity
+            v_deal_id, v_farmer_id, v_supply_id, v_supply_quantity
         );
 
-        -- Mark as Reserved
         UPDATE market_supply 
         SET status = 'reserved' 
         WHERE supply_id = v_supply_id;
 
-        -- Update Total
-        SET v_running_total = v_running_total + v_supply_quantity;
+        SET v_aggregated_qty = v_aggregated_qty + v_supply_quantity;
 
     END LOOP;
 
     CLOSE cur_supply;
 
-    -- =============================================
-    -- 8. Finalize Deal Status
-    -- =============================================
     UPDATE virtual_coop_deals
-    SET aggregated_quantity = v_running_total,
+    SET aggregated_quantity = v_aggregated_qty,
         status = CASE 
-            WHEN v_running_total >= p_target_quantity THEN 'fulfilled'
+            WHEN v_aggregated_qty >= p_target_quantity THEN 'fulfilled'
             ELSE 'partial'
         END
     WHERE deal_id = v_deal_id;
 
-    -- Commit Changes
+    -- CARBON CALCULATION
+    SELECT COALESCE(MAX(constant_value), 10.00) INTO v_individual_dist_per_farmer 
+    FROM system_constants WHERE constant_key = 'individual_trip_km';
+
+    SELECT COALESCE(MAX(constant_value), 15.00) INTO v_aggregated_dist 
+    FROM system_constants WHERE constant_key = 'aggregated_trip_km';
+
+    SELECT COALESCE(MAX(constant_value), 2.64) INTO v_emission_factor 
+    FROM system_constants WHERE constant_key = 'diesel_emission_factor';
+
+    SELECT COUNT(*) INTO v_total_farmers FROM deal_participants WHERE deal_id = v_deal_id;
+
+    SET v_total_individual_dist = v_total_farmers * v_individual_dist_per_farmer;
+    
+    IF v_total_individual_dist > v_aggregated_dist THEN
+        SET v_carbon_saved = ROUND((v_total_individual_dist - v_aggregated_dist) * v_emission_factor * 0.1, 2);
+    ELSE
+        SET v_carbon_saved = 0;
+    END IF;
+
+    UPDATE virtual_coop_deals 
+    SET carbon_saved = v_carbon_saved 
+    WHERE deal_id = v_deal_id;
+
     COMMIT;
+
+    -- Trigger Cost Allocation
+    CALL sp_allocate_costs(v_deal_id);
 
 END //
 

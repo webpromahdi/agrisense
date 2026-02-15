@@ -111,6 +111,42 @@ if ($pdo) {
 }
 ?>
 
+<?php
+// Fetch Cooperative Intelligence Stats
+$coopStats = [
+    'fulfilled' => 0,
+    'rate' => 0,
+    'volume' => 0,
+    'carbon' => 0,
+    'logistics' => 0
+];
+$recentDeals = [];
+
+if ($pdo) {
+    try {
+        $coopStats['fulfilled'] = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals WHERE status='fulfilled'")->fetchColumn();
+        $totalDeals = $pdo->query("SELECT COUNT(*) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['rate'] = ($totalDeals > 0) ? ($coopStats['fulfilled'] / $totalDeals) * 100 : 0;
+
+        $coopStats['volume'] = $pdo->query("SELECT SUM(aggregated_quantity) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['carbon'] = $pdo->query("SELECT SUM(carbon_saved) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['logistics'] = $pdo->query("SELECT SUM(logistics_cost) FROM virtual_coop_deals")->fetchColumn();
+
+        // Recent Deals for Widget
+        $sql = "SELECT v.*, c.crop_name, m.market_name 
+                FROM virtual_coop_deals v
+                JOIN crops c ON v.crop_id = c.crop_id
+                JOIN markets m ON v.market_id = m.market_id
+                ORDER BY created_at DESC LIMIT 5";
+        $stmt = $pdo->query($sql);
+        $recentDeals = $stmt->fetchAll();
+
+    } catch (PDOException $e) {
+        // Silent fail for dashboard
+    }
+}
+?>
+
 <?php include 'dashboard/partials/header.php'; ?>
 
 <style>
@@ -241,10 +277,21 @@ if ($pdo) {
         color: #44403C;
     }
 
-    .text-heading { color: #1C1917; }
-    .text-subheading { color: #166534; }
-    .text-body { color: #44403C; }
-    .text-muted { color: #78716C; }
+    .text-heading {
+        color: #1C1917;
+    }
+
+    .text-subheading {
+        color: #166534;
+    }
+
+    .text-body {
+        color: #44403C;
+    }
+
+    .text-muted {
+        color: #78716C;
+    }
 
     .link-primary {
         color: #166534;
@@ -259,7 +306,8 @@ if ($pdo) {
 </style>
 
 <!-- Header Banner -->
-<div class="relative h-[110px] overflow-hidden" style="background: linear-gradient(135deg, #166534 0%, #14532d 50%, #052e16 100%);">
+<div class="relative h-[110px] overflow-hidden"
+    style="background: linear-gradient(135deg, #166534 0%, #14532d 50%, #052e16 100%);">
     <div class="absolute right-0 top-0 w-1/3 h-full opacity-10"
         style="background: #ffffff; clip-path: polygon(30% 0, 100% 0, 100% 100%, 0 100%);"></div>
     <div class="absolute left-0 bottom-0 w-1/4 h-full opacity-10"
@@ -332,9 +380,9 @@ if ($pdo) {
             <div class="flex items-center justify-between mb-6">
                 <h3 class="section-title">🏆 Top Crop by Region</h3>
                 <a href="/agrisense/pages/top_crop_region.php" class="link-primary text-sm flex items-center gap-1">
-                    View All 
+                    View All
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
             </div>
@@ -357,7 +405,8 @@ if ($pdo) {
                                         <div class="avatar avatar-primary">
                                             <?= strtoupper(substr($crop['region_name'] ?? 'N', 0, 1)) ?>
                                         </div>
-                                        <span class="font-medium text-text-heading"><?= htmlspecialchars($crop['region_name'] ?? 'Unknown') ?></span>
+                                        <span
+                                            class="font-medium text-text-heading"><?= htmlspecialchars($crop['region_name'] ?? 'Unknown') ?></span>
                                     </div>
                                 </td>
                                 <td class="font-semibold text-text-subheading">
@@ -383,11 +432,11 @@ if ($pdo) {
         <!-- Top Farmer by Region -->
         <div class="section-card">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="section-title">👨‍🌾 Top Farmer by Region</h3>
+                <h3 class="section-title">👨🌾 Top Farmer by Region</h3>
                 <a href="/agrisense/pages/top_farmer_region.php" class="link-primary text-sm flex items-center gap-1">
                     View All
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </a>
             </div>
@@ -410,7 +459,8 @@ if ($pdo) {
                                         <div class="avatar avatar-secondary">
                                             <?= strtoupper(substr($farmer['farmer_name'] ?? 'N', 0, 1)) ?>
                                         </div>
-                                        <span class="font-medium text-text-heading"><?= htmlspecialchars($farmer['farmer_name'] ?? 'Unknown') ?></span>
+                                        <span
+                                            class="font-medium text-text-heading"><?= htmlspecialchars($farmer['farmer_name'] ?? 'Unknown') ?></span>
                                     </div>
                                 </td>
                                 <td class="text-text-body"><?= htmlspecialchars($farmer['region_name'] ?? 'Unknown') ?></td>
@@ -423,7 +473,7 @@ if ($pdo) {
                     <?php else: ?>
                         <tr>
                             <td colspan="4" class="empty-state">
-                                <div class="empty-state-icon">👨‍🌾</div>
+                                <div class="empty-state-icon">👨🌾</div>
                                 <p class="font-medium">No farmer data available</p>
                                 <p class="text-sm mt-1">Add supply records to see rankings</p>
                             </td>
@@ -434,6 +484,94 @@ if ($pdo) {
         </div>
 
     </div>
+</div>
+
+<!-- Cooperative Intelligence Section -->
+<div class="mt-8 mb-8">
+    <h3 class="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+        <span>🧠</span> Cooperative Intelligence Overview
+    </h3>
+
+    <!-- Intelligence KPIs -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <!-- Fulfillment Rate -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Fulfillment Rate</p>
+            <div class="flex items-end gap-2 mt-2">
+                <p class="text-3xl font-bold text-gray-800"><?= number_format($coopStats['rate'], 1) ?>%</p>
+                <span class="text-sm text-gray-500 mb-1">of deals</span>
+            </div>
+        </div>
+
+        <!-- Volume Aggregated -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Volume Aggregated</p>
+            <p class="text-3xl font-bold text-blue-600 mt-2"><?= number_format($coopStats['volume']) ?></p>
+            <p class="text-xs text-gray-500 mt-1">Total UNITS processed</p>
+        </div>
+
+        <!-- Carbon Saved -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Est. CO₂ Reduction</p>
+            <p class="text-3xl font-bold text-green-600 mt-2"><?= number_format($coopStats['carbon'], 2) ?></p>
+            <p class="text-xs text-gray-500 mt-1">Kilograms saved</p>
+        </div>
+
+        <!-- Logistics Managed -->
+        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+            <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Logistics Managed</p>
+            <p class="text-3xl font-bold text-orange-600 mt-2">৳<?= number_format($coopStats['logistics']) ?></p>
+            <p class="text-xs text-gray-500 mt-1">Total operational volume</p>
+        </div>
+    </div>
+
+    <!-- Recent Deals Widget -->
+    <div class="section-card">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="section-title">🤝 Recent Cooperative Deals</h3>
+            <a href="/agrisense/pages/aggregation_history.php" class="link-primary text-sm">View History →</a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Deal ID</th>
+                        <th>Crop</th>
+                        <th>Market</th>
+                        <th>Status</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($recentDeals)): ?>
+                        <?php foreach ($recentDeals as $deal): ?>
+                            <tr>
+                                <td class="font-mono text-gray-600">#<?= $deal['deal_id'] ?></td>
+                                <td class="font-medium text-gray-900"><?= htmlspecialchars($deal['crop_name']) ?></td>
+                                <td class="text-gray-600"><?= htmlspecialchars($deal['market_name']) ?></td>
+                                <td>
+                                    <?php if ($deal['status'] === 'fulfilled'): ?>
+                                        <span class="badge badge-success">Fulfilled</span>
+                                    <?php elseif ($deal['status'] === 'partial'): ?>
+                                        <span class="badge badge-warning">Partial</span>
+                                    <?php else: ?>
+                                        <span class="badge" style="background:#FEE2E2; color:#991B1B;">Cancelled</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="font-mono font-semibold"><?= number_format($deal['aggregated_quantity']) ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="5" class="empty-state">No recent deals</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 </div>
 
 <?php include 'dashboard/partials/footer.php'; ?>

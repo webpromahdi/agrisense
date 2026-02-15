@@ -44,9 +44,10 @@ if (!$deal_id) {
             // 3. Fetch Participants
             $sqlParticipants = "
                 SELECT 
-                    dp.quantity_allocated,
-                    f.farmer_name
-                FROM deal_participants dp
+                dp.quantity_allocated,
+                dp.cost_share,
+                f.farmer_name
+            FROM deal_participants dp
                 JOIN farmers f ON dp.farmer_id = f.farmer_id
                 WHERE dp.deal_id = :deal_id
                 ORDER BY dp.quantity_allocated DESC
@@ -174,11 +175,27 @@ if (!$deal_id) {
                         </p>
                     </div>
 
+                    <!-- Carbon Saved -->
+                    <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100">
+                        <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">CO₂ Carbon Saved</p>
+                        <p class="text-2xl font-bold text-green-600 font-mono">
+                            <?php echo number_format($deal['carbon_saved'], 2); ?> kg
+                        </p>
+                    </div>
+
+                    <!-- Logistics Cost -->
+                    <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100">
+                        <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Logistics Cost</p>
+                        <p class="text-2xl font-bold text-orange-600 font-mono">
+                            ৳<?php echo number_format($deal['logistics_cost'], 2); ?>
+                        </p>
+                    </div>
+
                     <!-- Farmers Count -->
                     <div class="bg-white p-5 rounded-lg shadow-md border border-gray-100">
                         <p class="text-xs text-gray-500 uppercase font-semibold tracking-wider mb-1">Total Farmers</p>
                         <p class="text-2xl font-bold text-indigo-600">
-                            <?php echo count($participants); ?> 👨‍🌾
+                            <?php echo count($participants); ?> 👨🌾
                         </p>
                     </div>
 
@@ -223,6 +240,9 @@ if (!$deal_id) {
                                         <th
                                             class="px-4 py-2 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
                                             Qty</th>
+                                        <th
+                                            class="px-4 py-2 text-right text-xs font-bold text-gray-500 uppercase tracking-wider">
+                                            Cost Share</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100">
@@ -233,6 +253,9 @@ if (!$deal_id) {
                                             </td>
                                             <td class="px-4 py-3 text-sm text-gray-600 text-right font-mono">
                                                 <?php echo number_format($p['quantity_allocated'], 2); ?>
+                                            </td>
+                                            <td class="px-4 py-3 text-sm text-gray-600 text-right font-mono text-orange-700">
+                                                ৳<?php echo number_format($p['cost_share'], 2); ?>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
