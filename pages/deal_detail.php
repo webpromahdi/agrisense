@@ -24,7 +24,16 @@ if (!$deal_id) {
         // 2. Fetch Deal Information
         $sqlDeal = "
             SELECT 
-                v.*,
+                v.deal_id,
+                v.crop_id,
+                v.market_id,
+                v.region_id,
+                v.target_quantity,
+                COALESCE(v.aggregated_quantity, 0) AS aggregated_quantity,
+                v.status,
+                COALESCE(v.logistics_cost, 0) AS logistics_cost,
+                COALESCE(v.carbon_saved, 0) AS carbon_saved,
+                v.created_at,
                 c.crop_name,
                 m.market_name
             FROM virtual_coop_deals v
@@ -45,7 +54,7 @@ if (!$deal_id) {
             $sqlParticipants = "
                 SELECT 
                 dp.quantity_allocated,
-                dp.cost_share,
+                COALESCE(dp.cost_share, 0) AS cost_share,
                 f.farmer_name
             FROM deal_participants dp
                 JOIN farmers f ON dp.farmer_id = f.farmer_id

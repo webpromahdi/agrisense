@@ -159,7 +159,7 @@ CREATE TABLE IF NOT EXISTS virtual_coop_deals (
     region_id INT NOT NULL,
     target_quantity DECIMAL(12,2) NOT NULL,
     aggregated_quantity DECIMAL(12,2) NOT NULL DEFAULT 0,
-    status ENUM('pending','fulfilled','partial','cancelled') DEFAULT 'pending',
+    status ENUM('pending','fulfilled','partial','cancelled','sold') DEFAULT 'pending',
     logistics_cost DECIMAL(12,2) DEFAULT 0,
     carbon_saved DECIMAL(12,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -175,7 +175,7 @@ CREATE TABLE IF NOT EXISTS deal_participants (
     farmer_id INT NOT NULL,
     supply_id INT NOT NULL,
     quantity_allocated DECIMAL(12,2) NOT NULL,
-    cost_share DECIMAL(12,2) DEFAULT NULL,
+    cost_share DECIMAL(12,2) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (deal_id) REFERENCES virtual_coop_deals(deal_id) ON DELETE CASCADE,
     FOREIGN KEY (farmer_id) REFERENCES farmers(farmer_id),
@@ -204,7 +204,11 @@ INSERT IGNORE INTO system_constants (constant_key, constant_value) VALUES
 
 DELIMITER //
 
+-- Drop existing procedures before recreation
+DROP PROCEDURE IF EXISTS sp_allocate_costs //
 DROP PROCEDURE IF EXISTS sp_auto_aggregate_order //
+DROP PROCEDURE IF EXISTS sp_cancel_deal //
+DROP PROCEDURE IF EXISTS sp_finalize_deal //
 
 CREATE PROCEDURE sp_allocate_costs(IN p_deal_id INT)
 BEGIN

@@ -121,7 +121,8 @@ $coopStats = [
     'reserved' => 0,
     'carbon_total' => 0,
     'avg_carbon' => 0,
-    'efficiency_score' => 0
+    'efficiency_score' => 0,
+    'total_aggregated' => 0
 ];
 $recentDeals = [];
 
@@ -134,7 +135,8 @@ if ($pdo) {
         $coopStats['reserved'] = $pdo->query("SELECT COALESCE(SUM(quantity),0) FROM market_supply WHERE status = 'reserved'")->fetchColumn();
         $coopStats['farmers'] = $pdo->query("SELECT COUNT(DISTINCT farmer_id) FROM deal_participants")->fetchColumn();
         $coopStats['carbon_total'] = $pdo->query("SELECT COALESCE(SUM(carbon_saved),0) FROM virtual_coop_deals")->fetchColumn();
-        $coopStats['avg_carbon'] = $pdo->query("SELECT COALESCE(AVG(carbon_saved),0) FROM virtual_coop_deals")->fetchColumn();
+        $coopStats['avg_carbon'] = $pdo->query("SELECT COALESCE(AVG(carbon_saved),0) FROM virtual_coop_deals WHERE status != 'cancelled'")->fetchColumn();
+        $coopStats['total_aggregated'] = $pdo->query("SELECT COALESCE(SUM(aggregated_quantity),0) FROM virtual_coop_deals WHERE status != 'cancelled'")->fetchColumn();
 
         // Calculate Efficiency Score
         // (FulfillmentRate * 0.5) + ((CarbonSaved/100) * 0.3) + ((ParticipatingFarmers/50) * 0.2)
@@ -540,7 +542,7 @@ if ($pdo) {
 </div>
 
 <!-- Cooperative Intelligence Section -->
-<div class="mt-8 mb-8">
+<div class="mt-8 mb-12 px-6">
     <div class="flex items-center justify-between mb-6">
         <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
             <span>🧠</span> Cooperative Intelligence Overview
@@ -577,7 +579,7 @@ if ($pdo) {
     </div>
 
     <!-- Intelligence KPIs -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Deals -->
         <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
             <p class="text-xs text-gray-500 uppercase font-bold tracking-wider">Total Deals</p>
@@ -631,7 +633,9 @@ if ($pdo) {
                     <?php if (!empty($recentDeals)): ?>
                         <?php foreach ($recentDeals as $deal): ?>
                             <tr>
-                                <td class="font-mono text-gray-600">#<?= $deal['deal_id'] ?></td>
+                                <td class="font-mono text-gray-600">
+                                    <a href="/agrisense/pages/deal_detail.php?id=<?= $deal['deal_id'] ?>" class="text-primary hover:underline">#<?= $deal['deal_id'] ?></a>
+                                </td>
                                 <td class="font-medium text-gray-900"><?= htmlspecialchars($deal['crop_name']) ?></td>
                                 <td class="text-gray-600"><?= htmlspecialchars($deal['market_name']) ?></td>
                                 <td>
@@ -655,7 +659,6 @@ if ($pdo) {
             </table>
         </div>
     </div>
-</div>
 </div>
 
 <?php include 'dashboard/partials/footer.php'; ?>

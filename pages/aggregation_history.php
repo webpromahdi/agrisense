@@ -21,10 +21,10 @@ try {
         SELECT 
             v.deal_id,
             v.target_quantity,
-            v.aggregated_quantity,
+            COALESCE(v.aggregated_quantity, 0) AS aggregated_quantity,
             v.status,
-            v.logistics_cost,
-            v.carbon_saved,
+            COALESCE(v.logistics_cost, 0) AS logistics_cost,
+            COALESCE(v.carbon_saved, 0) AS carbon_saved,
             v.created_at,
             c.crop_name,
             m.market_name,

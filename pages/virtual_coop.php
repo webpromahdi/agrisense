@@ -71,7 +71,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Safe Deal Fetching: Filter by the parameters we just used to reduce concurrency risks
             $stmt = $pdo->prepare("
-                SELECT * 
+                SELECT 
+                    deal_id,
+                    crop_id,
+                    market_id,
+                    region_id,
+                    target_quantity,
+                    COALESCE(aggregated_quantity, 0) AS aggregated_quantity,
+                    status,
+                    COALESCE(logistics_cost, 0) AS logistics_cost,
+                    COALESCE(carbon_saved, 0) AS carbon_saved,
+                    created_at
                 FROM virtual_coop_deals 
                 WHERE crop_id = :crop_id 
                   AND market_id = :market_id 
